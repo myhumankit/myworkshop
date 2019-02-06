@@ -6,17 +6,68 @@
         <h1 class="display-4">{{ project.full_name }}</h1>
         <p class="lead">{{ project.short_description }}</p>
         <hr class="my-4">
+        <p>
+            Durée estimée : <span class="badge badge-danger">{{ project.computed.duration }} heures</span>
+        </p>
     </div>
 </div>
 
 <div class="container">
+
     <div class="row">
         <div class="col-md-12">
             <h2>Présentation du projet</h2>
             {% if project.featured_image.url %}
-            <img src="{{ format_url(project.featured_image.url, base_url) }}" class="d-block w-100 img-thumbnail">
+            <img src="{{ format_url(project.featured_image.url, project.base_url) }}" class="d-block w-100 img-thumbnail">
             {% endif %}
         </div>
     </div>
+
+    <div class="row">
+        {% if project.contributors %}
+        <div class="col-md-4">
+            <h2>Contributeurs</h2>
+            <ul>
+                {% for contributor in project.contributors %}
+                <li>{{ contributor.full_name }} {{ '('+contributor.role+')' if contributor.role }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if project.links %}
+        <div class="col-md-4">
+            <h2>Liens</h2>
+            <ul>
+                {% for link in project.links %}
+                <li><a href="{{ format_url(link.url, project.base_url) }}">{{ link.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if project.steps %}
+    {% for step in project.steps %}
+    <hr>
+    <div class="row">
+        <div class="col-md-3">
+            <!-- menu of the step -->
+            {% if step.duration %}
+            <button type="button" class="btn btn-sm btn-danger">{{ step.duration }} heures</button>
+            {% endif %}
+        </div>
+        <div class="col-md-9">
+            <!-- body of the step -->
+            <h2>Étape {{ loop.index }} : {{ step.title }}</h2>
+            <p>{{ step.content }}</p>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+
+
+
 </div> <!-- /container -->
 {% endblock %}

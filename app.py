@@ -53,5 +53,19 @@ def project_details(organisation, repository):
     except Exception as valid_err:
         return render_template('error.html', title='400 - Bad Request', details='The source file is not a valid JSON.', message=valid_err), 400
 
+    # some datas are computed
+    duration = 0
+
+    if 'steps' in data['project']:
+        for step in data['project']['steps']:
+            if 'duration' in step:
+                duration += step['duration']
+
+    data['project']['computed'] = {
+        "duration": duration
+    }
+
+    data['project']['base_url'] = base_url
+
     # project rendering
-    return render_template('project.html', project=data['project'], base_url=base_url)
+    return render_template('project.html', project=data['project'])
