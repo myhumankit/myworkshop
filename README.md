@@ -8,9 +8,10 @@ A documentation generator for open hardware projects.
 
 ### Requirements
  * python 3.6 or higher (package _python3_);
+ * Flask 1.0.2 or higher;
 
 ```
-$ python3 -m virtualenv venv
+$ python3 -m virtualenv -p python3 venv
 $ source venv/bin/activate
 $ pip install Flask
 ```
