@@ -14,7 +14,7 @@
         <div class="col-md-12">
             <h2>Présentation du projet</h2>
             {% if project.featured_image.url %}
-            <img src="{{ base_url + project.featured_image.url }}" class="d-block w-100 img-thumbnail">
+            <img src="{{ format_url(project.featured_image.url, base_url) }}" class="d-block w-100 img-thumbnail">
             {% endif %}
         </div>
     </div>

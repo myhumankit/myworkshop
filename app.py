@@ -2,7 +2,20 @@ from flask import Flask, render_template, redirect, url_for
 import requests
 import json
 from jsonschema import validate
+from urllib.parse import urlparse
+
 app = Flask(__name__)
+
+@app.context_processor
+def utility_processor():
+    def format_url(url, base_url):
+        """Tranform a local url to a global url, if required."""
+        o = urlparse(url)
+        if not o.scheme:
+            return base_url + url
+        else:
+            return url
+    return dict(format_url=format_url)
 
 @app.route("/")
 def index():
