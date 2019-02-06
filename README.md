@@ -16,6 +16,7 @@ We strongly recommend to install a virtualenv:
 $ python3 -m virtualenv -p python3 venv
 $ source venv/bin/activate
 $ pip install Flask
+$ pip install requests
 ```
 
 To run the application locally:
