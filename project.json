@@ -2,6 +2,107 @@
     "$schema": "http://json-schema.org/schema#",
     "title": "JSON SCHEMA for My Workshop",
     "description": "This is a JSON SCHEMA for the documentation generator My Workshop",
+
+    "definitions": {
+        "image": {
+            "description": "link to a picture",
+            "type": "object",
+            "required": ["url"],
+            "properties": {
+                "url": {
+                    "type": "string"
+                },
+                "caption": {
+                    "type": "string"
+                }
+            }
+        },
+        "link": {
+            "description": "link to a website, etc.",
+            "type": "object",
+            "required": ["url", "title"],
+            "properties": {
+                "url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "user": {
+            "description": "a physical person",
+            "type": "object",
+            "required": ["full_name"],
+            "properties": {
+                "full_name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "step": {
+            "description": "describe a step of the tutorial",
+            "type": "object",
+            "required": ["title", "content"],
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "images": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/image" }
+                }
+            }
+        }
+    },
+
     "type": "object",
-    "required": ["project"]
+    "required": ["project"],
+    "properties": {
+        "project": {
+            "description": "Root of the project description",
+            "type": "object",
+            "required": ["full_name", "slug", "short_description", "lang"],
+            "properties": {
+                "full_name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "short_description": {
+                    "type": "string"
+                },
+                "lang": {
+                    "type": "string"
+                },
+                "featured_image": { "$ref": "#/definitions/image" },
+                "links": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/link" }
+                },
+                "contributors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/user" }
+                },
+                "steps": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/step" }
+                }
+            }
+        }
+    }
 }
