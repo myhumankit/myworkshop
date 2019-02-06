@@ -10,10 +10,19 @@ A documentation generator for open hardware projects.
  * python 3.6 or higher (package _python3_);
  * Flask 1.0.2 or higher;
 
+We strongly recommend to install a virtualenv:
+
 ```
 $ python3 -m virtualenv -p python3 venv
 $ source venv/bin/activate
 $ pip install Flask
+```
+
+To run the application locally:
+
+```
+$ export FLASK_APP=app.py
+$ flask run
 ```
 
 ## Tech/framework used
