@@ -17,6 +17,7 @@ $ python3 -m virtualenv -p python3 venv
 $ source venv/bin/activate
 $ pip install Flask
 $ pip install requests
+$ pip install jsonschema
 ```
 
 To run the application locally:
