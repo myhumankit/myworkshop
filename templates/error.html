@@ -4,7 +4,7 @@
 <div class="jumbotron">
     <div class="container">
         <h1 class="display-4">Error: {{ title }}</h1>
-        <p class="lead">{{ details }}</p>
+        <p class="lead">{{ error.error }}</p>
         <hr class="my-4">
         <p class="lead">
             <a class="btn btn-primary btn-lg" href="{{ url_for('index') }}" role="button">Go home</a>
@@ -15,9 +15,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            {% if message %}
+            {% if error.message %}
             <h2>Message:</h2>
-            <pre>{{ message }}</pre>
+            <pre>{{ error.message }}</pre>
             {% endif %}
         </div>
     </div>
