@@ -1,0 +1,6 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "title": "JSON SCHEMA for My Workshop",
+    "description": "This is a JSON SCHEMA for the documentation generator My Workshop",
+    "type": "object"
+}
