@@ -170,7 +170,5 @@ def project_details(organisation, repository):
         "skills": skills
     }
 
-    project['project']['base_url'] = project['base_url']
-
     # project rendering
     return render_template('project.html', project=project['project'])
