@@ -62,6 +62,15 @@ def utility_processor():
     return dict(format_url=format_url)
 
 
+def url_local_to_global(url, base_url):
+    """Tranform a local url to a global url, if required."""
+    o = urlparse(url)
+    if not o.scheme:
+        return base_url + url
+    else:
+        return url
+
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -79,10 +88,46 @@ def project_details(organisation, repository):
     if error:
         return render_template('error.html', title='400 - Bad Request', error=error), 400
 
+    # on remplace les urls locales par des urls globales
+    # très moche ! à revoir !
+    if not error:
+        if 'featured_image' in project['project']:
+            if 'url' in project['project']['featured_image']:
+                project['project']['featured_image']['url'] = url_local_to_global(project['project']['featured_image']['url'], project['base_url'])
+        if 'links' in project['project']:
+            link_index = 0
+            for link in project['project']['links']:
+                if 'url' in link:
+                    project['project']['links'][link_index]['url'] = url_local_to_global(project['project']['links'][link_index]['url'], project['base_url'])
+            link_index += 1
+        if 'steps' in project['project']:
+            step_index = 0
+            for step in project['project']['steps']:
+                if 'images' in step:
+                    image_index = 0
+                    for image in step['images']:
+                        if 'url' in image:
+                            project['project']['steps'][step_index]['images'][image_index]['url'] = url_local_to_global(project['project']['steps'][step_index]['images'][image_index]['url'], project['base_url'])
+                        image_index += 1
+                step_index += 1
+
     # load local libraries
     components_library, error = load_github_file(organisation, repository, 'components')
     if error:
         components_library = {"components": []}
+
+    # on remplace les urls locales par des urls globales
+    # très moche ! à revoir !
+    if not error:
+        component_index = 0
+        for component in components_library['components']:
+            if 'images' in component:
+                image_index = 0
+                for image in component['images']:
+                    if 'url' in image:
+                        components_library['components'][component_index]['images'][image_index]['url'] = url_local_to_global(image['url'], components_library['base_url'])
+                    image_index += 1
+            component_index += 1
 
     # some datas are computed
     duration = 0

@@ -31,7 +31,7 @@
                 Attention : Cette documentation est fournie à titre informatif. En aucun cas l'auteur de cette documentation ne peux être tenu responsable d'un éventuel problème.
             </div>
             {% if project.featured_image.url %}
-            <img src="{{ format_url(project.featured_image.url, project.base_url) }}" class="d-block w-100 img-thumbnail">
+            <img src="{{ project.featured_image.url }}" class="d-block w-100 img-thumbnail">
             {% endif %}
         </div>
     </div>
@@ -53,7 +53,7 @@
             <h2>Liens</h2>
             <ul>
                 {% for link in project.links %}
-                <li><a href="{{ format_url(link.url, project.base_url) }}">{{ link.title }}</a></li>
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -97,7 +97,7 @@
                 <div class="carousel-inner">
                     {% for image in step.images %}
                     <div class="carousel-item {{ 'active' if loop.index == 1 }}">
-                        <img src="{{ format_url(image.url, project.base_url) }}" class="d-block w-100 img-thumbnail">
+                        <img src="{{ image.url }}" class="d-block w-100 img-thumbnail">
                         {% if image.caption %}
                         <div class="carousel-caption d-none d-md-block">
                             <p>{{ image.caption }}</p>
