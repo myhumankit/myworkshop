@@ -8,8 +8,25 @@ from uuid import uuid4
 app = Flask(__name__)
 
 
+def absolute_url(document, base_url):
+    """reads a 'url' key anywere in a json file and update it to a absolute url, if required"""
+    if isinstance(document, list):
+        i = 0
+        for item in document:
+            absolute_url(item, base_url)
+            i += 1
+    elif isinstance(document, dict):
+        for k in document.keys():
+            if k == 'url':
+                o = urlparse(document[k])
+                if not o.scheme:
+                    document[k] = base_url + document[k]
+            else:
+                absolute_url(document[k], base_url)
+
+
 def load_github_file(organisation, repository, file_name):
-    # download file
+    "download a json file, check if it validate JSON SCHEMA and replace all relative urls to absolute ones"
     base_url = "https://raw.githubusercontent.com/{0}/{1}/master/".format(organisation, repository)
     full_file_name = file_name + '.json'
     url = base_url + full_file_name
@@ -32,7 +49,8 @@ def load_github_file(organisation, repository, file_name):
     except Exception as valid_err:
         return {}, {'error': 'Invalid JSON file according to JSON SCHEMA', 'message': valid_err}
 
-    data['base_url'] = base_url
+    # update relative urls to absolute urls
+    absolute_url(data, base_url)
     return data, 0
 
 
@@ -48,27 +66,6 @@ def component_complete(component, components_library):
         'quantity': 1
     }
     return dict(default_component, **component)
-
-
-@app.context_processor
-def utility_processor():
-    def format_url(url, base_url):
-        """Tranform a local url to a global url, if required."""
-        o = urlparse(url)
-        if not o.scheme:
-            return base_url + url
-        else:
-            return url
-    return dict(format_url=format_url)
-
-
-def url_local_to_global(url, base_url):
-    """Tranform a local url to a global url, if required."""
-    o = urlparse(url)
-    if not o.scheme:
-        return base_url + url
-    else:
-        return url
 
 
 @app.route("/")
@@ -88,46 +85,10 @@ def project_details(organisation, repository):
     if error:
         return render_template('error.html', title='400 - Bad Request', error=error), 400
 
-    # on remplace les urls locales par des urls globales
-    # très moche ! à revoir !
-    if not error:
-        if 'featured_image' in project['project']:
-            if 'url' in project['project']['featured_image']:
-                project['project']['featured_image']['url'] = url_local_to_global(project['project']['featured_image']['url'], project['base_url'])
-        if 'links' in project['project']:
-            link_index = 0
-            for link in project['project']['links']:
-                if 'url' in link:
-                    project['project']['links'][link_index]['url'] = url_local_to_global(project['project']['links'][link_index]['url'], project['base_url'])
-            link_index += 1
-        if 'steps' in project['project']:
-            step_index = 0
-            for step in project['project']['steps']:
-                if 'images' in step:
-                    image_index = 0
-                    for image in step['images']:
-                        if 'url' in image:
-                            project['project']['steps'][step_index]['images'][image_index]['url'] = url_local_to_global(project['project']['steps'][step_index]['images'][image_index]['url'], project['base_url'])
-                        image_index += 1
-                step_index += 1
-
     # load local libraries
     components_library, error = load_github_file(organisation, repository, 'components')
     if error:
         components_library = {"components": []}
-
-    # on remplace les urls locales par des urls globales
-    # très moche ! à revoir !
-    if not error:
-        component_index = 0
-        for component in components_library['components']:
-            if 'images' in component:
-                image_index = 0
-                for image in component['images']:
-                    if 'url' in image:
-                        components_library['components'][component_index]['images'][image_index]['url'] = url_local_to_global(image['url'], components_library['base_url'])
-                    image_index += 1
-            component_index += 1
 
     # some datas are computed
     duration = 0
