@@ -8,11 +8,15 @@
         <hr class="my-4">
         <p>
             Durée estimée : <span class="badge badge-danger">{{ project.computed.duration }} heures</span>
-        </p>
-        <p>
+            <br>
             B.O.M. :
             {% for component in project.computed.components %}
             <span class="badge badge-dark">{{ component.name }} <span class="badge badge-light">{{ component.quantity|string if component.quantity }} {{ component.unit if component.unit }}</span></span>
+            {% endfor %}
+            <br>
+            Compétences requises :
+            {% for skill in project.computed.skills %}
+            <span class="badge badge-success">{{ skill.name }}</span>
             {% endfor %}
         </p>
     </div>
@@ -71,6 +75,13 @@
             <button type="button" class="btn btn-sm btn-dark">{{ component.name }} <span class="badge badge-light">{{ component.quantity|string if component.quantity }} {{ component.unit if component.unit }}</span></button>
             {% endfor %}
             {% endif %}
+
+            {% if step.skills %}
+            {% for skill in step.skills %}
+            <button type="button" class="btn btn-sm btn-success">{{ skill.name }}</button>
+            {% endfor %}
+            {% endif %}
+
         </div>
         <div class="col-md-9">
             <!-- body of the step -->

@@ -87,6 +87,7 @@ def project_details(organisation, repository):
     # some datas are computed
     duration = 0
     components = []
+    skills = []
 
     if 'steps' in project['project']:
         step_index = 0
@@ -110,10 +111,18 @@ def project_details(organisation, repository):
                 for component in step['components']:
                     components.append(component)
 
+        # calculation of the required skills
+        for step in project['project']['steps']:
+            if 'skills' in step:
+                for skill in step['skills']:
+                    skills.append(skill)
+
+
     # add computed datas to project datas
     project['project']['computed'] = {
         "duration": duration,
-        "components": components
+        "components": components,
+        "skills": skills
     }
 
     project['project']['base_url'] = project['base_url']

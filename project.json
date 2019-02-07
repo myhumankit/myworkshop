@@ -57,6 +57,16 @@
                 }
             }
         },
+        "skill": {
+            "description": "a required skill to perfom a step",
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "step": {
             "description": "describe a step of the tutorial",
             "type": "object",
@@ -80,6 +90,11 @@
                     "type": "array",
                     "minItems": 1,
                     "items": { "$ref": "#/definitions/alert" }
+                },
+                "skills": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/skill" }
                 }
             }
         }
