@@ -106,6 +106,14 @@
             </div>
             {% endif %}
 
+            {% if step.alerts %}
+            {% for alert in step.alerts %}
+            <div class="alert alert-{{ alert.class }}" role="alert">
+                {{ alert.message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
             <p>{{ step.content }}</p>
         </div>
     </div>
