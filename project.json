@@ -93,7 +93,8 @@
                     "type": "string"
                 },
                 "content": {
-                    "type": "textarea"
+                    "type": "string",
+                    "format": "textarea"
                 },
                 "duration": {
                     "description": "estimated duration of a step",
