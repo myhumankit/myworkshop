@@ -139,6 +139,9 @@
                 "lang": {
                     "type": "string"
                 },
+                "version": {
+                    "type": "string"
+                },
                 "featured_image": { "$ref": "#/definitions/image" },
                 "links": {
                     "type": "array",
