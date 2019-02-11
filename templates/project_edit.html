@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}édition{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-4">JSON Editor</h1>
+        <p class="lead">Edit your project, copy the generated JSON and commit!</p>
+        <hr class="my-4">
+        <p class="text-right"><button id='copy_to_clipboard' class="btn btn-primary">Copy JSON to Clipboard</button></p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div id='editor_holder'></div>
+        </div>
+    </div>
+</div>
+<script>
+    // Initialize the editor with a JSON schema
+    var editor = new JSONEditor(document.getElementById('editor_holder'), {
+        theme: 'bootstrap4',
+        iconlib: 'fontawesome5',
+        display_required_only: true,
+        collapsed: true,
+        startval: {{ project | safe }},
+        schema: {{ json_schema | safe }}
+    });
+
+    // Hook up the submit button to log to the console
+    document.getElementById('copy_to_clipboard').addEventListener('click', function() {
+        // Get the value from the editor
+        //console.log(editor.getValue());
+        navigator.clipboard.writeText(JSON.stringify(editor.getValue(),null,4));
+        alert("Copied to Clipboard!");
+    });
+</script>
+{% endblock %}

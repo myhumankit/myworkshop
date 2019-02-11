@@ -25,7 +25,7 @@ def absolute_url(document, base_url):
                 absolute_url(document[k], base_url)
 
 
-def load_github_file(organisation, repository, file_name):
+def load_github_file(organisation, repository, file_name, force_validate=True, to_absolute_url=True):
     "download a json file, check if it validate JSON SCHEMA and replace all relative urls to absolute ones"
     base_url = "https://raw.githubusercontent.com/{0}/{1}/master/".format(organisation, repository)
     full_file_name = file_name + '.json'
@@ -40,17 +40,20 @@ def load_github_file(organisation, repository, file_name):
     except:
         return {}, {'error': 'Invalid JSON file'}
 
-    with open(full_file_name, "r") as file:
-        json_schema = json.load(file)
-
     # validate the source according to JSON SCHEMA
-    try:
-        validate(data, json_schema)
-    except Exception as valid_err:
-        return {}, {'error': 'Invalid JSON file according to JSON SCHEMA', 'message': valid_err}
+    if force_validate:
+        with open(full_file_name, "r") as file:
+            json_schema = json.load(file)
+
+        try:
+            validate(data, json_schema)
+        except Exception as valid_err:
+            return {}, {'error': 'Invalid JSON file according to JSON SCHEMA', 'message': valid_err}
 
     # update relative urls to absolute urls
-    absolute_url(data, base_url)
+    if to_absolute_url:
+        absolute_url(data, base_url)
+
     return data, 0
 
 
@@ -133,3 +136,20 @@ def project_details(organisation, repository):
 
     # project rendering
     return render_template('project.html', project=project['project'])
+
+
+@app.route('/<string:organisation>/<string:repository>/edit')
+def project_details_edit(organisation, repository):
+
+    # load project datas
+    project, error = load_github_file(organisation, repository, 'project', to_absolute_url=False)
+    if error:
+        return render_template('error.html', title='400 - Bad Request', error=error), 400
+
+    # load project's json schema
+    json_schema, error = load_github_file('myhumankit', 'myworkshop', 'project', force_validate=False, to_absolute_url=False)
+    if error:
+        return render_template('error.html', title='400 - Bad Request', error=error), 400
+
+    # project rendering
+    return render_template('project_edit.html', project=json.dumps(project), json_schema=json.dumps(json_schema))
