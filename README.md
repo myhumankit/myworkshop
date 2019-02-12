@@ -37,7 +37,7 @@ We use [SemVer](http://semver.org/) for versioning. See the [CHANGELOG.md](CHANG
 If you'd like to contribute, please raise an issue or fork the repository and use a feature branch. Pull requests are warmly welcome.
 
 ## Licensing
-The code in this project is licensed under MIT license. See the [LICENCE](LICENCE) file for details.
+The code in this project is licensed under MIT license. See the [LICENSE](LICENSE) file for details.
 
 ## Contributors
  * **Julien Lebunetel** - [jlebunetel](https://github.com/jlebunetel)
