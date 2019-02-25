@@ -8,23 +8,23 @@ A documentation generator for open hardware projects.
 
 ### Requirements
  * python 3.6 or higher (package _python3_);
- * Flask 1.0.2 or higher;
 
-We strongly recommend to install a virtualenv:
-
+### Install
+Install all the required tools in a virtualenv:
 ```
-$ python3 -m virtualenv -p python3 venv
-$ source venv/bin/activate
-$ pip install Flask
-$ pip install requests
-$ pip install jsonschema
+$ make install
 ```
 
+### Serve
 To run the application locally:
-
 ```
-$ export FLASK_APP=app.py
-$ flask run
+$ make serve
+```
+
+### Additional tools
+To test if _project.json_ is a valid JSON file:
+```
+$ make test-json
 ```
 
 ## Tech/framework used
