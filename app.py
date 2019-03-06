@@ -95,7 +95,7 @@ def page_not_found(e):
     )
 
 
-@app.route("/<string:organization>/<string:repository>/json")
+@app.route("/api/v1/<string:organization>/<string:repository>")
 def project_details_json(organization, repository):
     # load project datas
     project, error = load_github_file(organization, repository, "project")
@@ -104,6 +104,53 @@ def project_details_json(organization, repository):
             render_template("error.html", title="400 - Bad Request", error=error),
             400,
         )
+
+    # some datas are computed
+    duration = 0
+    components = []
+    tools = []
+    # skills = []
+
+    if "steps" in project["project"]:
+        step_index = 0
+        for step in project["project"]["steps"]:
+            # calculation of cumulative duration
+            if "duration" in step:
+                duration += step["duration"]
+
+            # on complete les informations sur les inputs
+            if "inputs" in step:
+                input_index = 0
+                for input in step["inputs"]:
+                    if "component" in input:
+                        # project["project"]["steps"][step_index]["inputs"][input_index]["component"] = '{"bingo"}'
+                        components.append(
+                            project["project"]["steps"][step_index]["inputs"][
+                                input_index
+                            ]["component"]
+                        )
+                    if "tool" in input:
+                        # project["project"]["steps"][step_index]["inputs"][input_index]["tool"] = '{"bingo"}'
+                        tools.append(
+                            project["project"]["steps"][step_index]["inputs"][
+                                input_index
+                            ]["tool"]
+                        )
+                    input_index += 1
+
+            step_index += 1
+
+        # calculation of the B.O.M.
+
+        # calculation of the required skills
+
+    # add computed datas to project datas
+    project["project"]["computed"] = {
+        "duration": duration,
+        "components": components,
+        "tools": tools,
+        # "skills": skills,
+    }
 
     # project rendering
     return jsonify(project)
