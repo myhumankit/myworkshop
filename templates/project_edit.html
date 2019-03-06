@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 {% block title %}édition{% endblock %}
 {% block head %}
+<!-- Flatpickr -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.5.1/flatpickr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.5.1/flatpickr.min.css" />
+
+<!-- SimpleMDE -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<!-- JSON-Editor -->
 <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
 {% endblock %}
 {% block content %}
