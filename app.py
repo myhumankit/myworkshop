@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, jsonify
 import requests
 import json
 from jsonschema import validate
@@ -26,11 +26,11 @@ def absolute_url(document, base_url):
 
 
 def load_github_file(
-    organisation, repository, file_name, force_validate=True, to_absolute_url=True
+    organization, repository, file_name, force_validate=True, to_absolute_url=True
 ):
-    "download a json file, check if it validate JSON SCHEMA and replace all relative urls to absolute ones"
+    """download a json file, check if it validate JSON SCHEMA and replace all relative urls to absolute ones"""
     base_url = "https://raw.githubusercontent.com/{0}/{1}/master/".format(
-        organisation, repository
+        organization, repository
     )
     full_file_name = file_name + ".json"
     url = base_url + full_file_name
@@ -46,7 +46,8 @@ def load_github_file(
 
     # validate the source according to JSON SCHEMA
     if force_validate:
-        with open(full_file_name, "r") as file:
+        # load project's json schema
+        with open("project.json", "r") as file:
             json_schema = json.load(file)
 
         try:
@@ -94,10 +95,24 @@ def page_not_found(e):
     )
 
 
-@app.route("/<string:organisation>/<string:repository>")
-def project_details(organisation, repository):
+@app.route("/<string:organization>/<string:repository>/json")
+def project_details_json(organization, repository):
     # load project datas
-    project, error = load_github_file(organisation, repository, "project")
+    project, error = load_github_file(organization, repository, "project")
+    if error:
+        return (
+            render_template("error.html", title="400 - Bad Request", error=error),
+            400,
+        )
+
+    # project rendering
+    return jsonify(project)
+
+
+@app.route("/<string:organization>/<string:repository>")
+def project_details(organization, repository):
+    # load project datas
+    project, error = load_github_file(organization, repository, "project")
     if error:
         return (
             render_template("error.html", title="400 - Bad Request", error=error),
@@ -105,7 +120,7 @@ def project_details(organisation, repository):
         )
 
     # load local libraries
-    components_library, error = load_github_file(organisation, repository, "components")
+    components_library, error = load_github_file(organization, repository, "components")
     if error:
         components_library = {"components": []}
 
@@ -155,12 +170,12 @@ def project_details(organisation, repository):
     return render_template("project.html", project=project["project"])
 
 
-@app.route("/<string:organisation>/<string:repository>/edit")
-def project_details_edit(organisation, repository):
+@app.route("/<string:organization>/<string:repository>/edit")
+def project_details_edit(organization, repository):
 
     # load project datas
     project, error = load_github_file(
-        organisation, repository, "project", to_absolute_url=False
+        organization, repository, "project", to_absolute_url=False
     )
     if error:
         return (
@@ -169,18 +184,8 @@ def project_details_edit(organisation, repository):
         )
 
     # load project's json schema
-    json_schema, error = load_github_file(
-        "myhumankit",
-        "myworkshop",
-        "project",
-        force_validate=False,
-        to_absolute_url=False,
-    )
-    if error:
-        return (
-            render_template("error.html", title="400 - Bad Request", error=error),
-            400,
-        )
+    with open("project.json", "r") as file:
+        json_schema = json.load(file)
 
     # project rendering
     return render_template(
