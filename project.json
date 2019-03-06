@@ -1,175 +1,598 @@
 {
     "$schema": "http://json-schema.org/schema#",
     "$id": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/schemas/project.json",
-    "title": "JSON SCHEMA for My Workshop",
+    "title": "JSON SCHEMA for My Workshop projects",
     "description": "This is a JSON SCHEMA for the documentation generator My Workshop",
-
     "definitions": {
+        "url": {
+            "title": "URL",
+            "description": "Relative or absolute URL.",
+            "type": "string",
+            "format": "uri"
+        },
+        "id": {
+            "title": "Id",
+            "description": "The file name of the JSON component description.",
+            "type": "string"
+        },
+        "github_organization": {
+            "title": "GitHub organization",
+            "type": "string"
+        },
+        "github_repository": {
+            "title": "GitHub repository",
+            "type": "string"
+        },
         "image": {
-            "description": "link to a picture",
+            "title": "Image",
             "type": "object",
-            "required": ["url"],
+            "required": ["image"],
+            "additionalProperties": false,
             "properties": {
-                "url": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "caption": {
-                    "type": "string"
+                "image": {
+                    "title": "Image",
+                    "description": "Link to a picture.",
+                    "type": "object",
+                    "required": ["url", "caption"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "url": {
+                            "$ref": "#/definitions/url"
+                        },
+                        "caption": {
+                            "title": "Caption",
+                            "description": "Legend of the image.",
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "youtube": {
+            "title": "Youtube",
+            "type": "object",
+            "required": ["youtube"],
+            "additionalProperties": false,
+            "properties": {
+                "youtube": {
+                    "title": "Youtube",
+                    "description": "Embedded YouTube video.",
+                    "type": "object",
+                    "required": ["url", "caption"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "url": {
+                            "$ref": "#/definitions/url"
+                        },
+                        "caption": {
+                            "title": "Caption",
+                            "description": "Legend of the video.",
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
         "link": {
-            "description": "link to a website, etc.",
+            "title": "Link",
+            "description": "Link to a website, etc.",
             "type": "object",
-            "required": ["url", "title"],
+            "required": ["url", "text"],
             "properties": {
                 "url": {
-                    "type": "string",
-                    "format": "uri"
+                    "$ref": "#/definitions/url"
                 },
-                "title": {
+                "text": {
+                    "title": "Text",
+                    "description": "Visible part of the link.",
                     "type": "string"
                 },
                 "fa5_icon": {
-                    "title": "Font Awesome 5 icon class",
-                    "type": "string"
+                    "title": "Icon",
+                    "title": "Font Awesome 5 icon class.",
+                    "type": "string",
+                    "default": "fas fa-link"
                 }
             }
         },
         "user": {
-            "description": "a physical person",
+            "title": "User",
+            "description": "A physical person.",
             "type": "object",
             "required": ["full_name"],
             "properties": {
                 "full_name": {
+                    "title": "Full name",
                     "type": "string"
                 },
                 "email": {
+                    "title": "email",
                     "format": "email",
                     "type": "string"
                 },
                 "github_username": {
+                    "title": "GitHub username",
                     "type": "string"
                 },
                 "twitter_username": {
+                    "title": "Twitter username",
                     "type": "string"
                 },
                 "role": {
-                    "type": "string"
+                    "title": "Role",
+                    "description": "User's role in a project.",
+                    "type": "string",
+                    "enum": ["Porteur de projet", "Animateur", "Fabmanager référent", "Contributeur", "Responsable de la documentation"]
+                }
+            }
+        },
+        "paragraph": {
+            "title": "Paragraph",
+            "type": "object",
+            "required": ["paragraph"],
+            "additionalProperties": false,
+            "properties": {
+                "paragraph": {
+                    "title": "Paragraph",
+                    "description": "A generic paragraph.",
+                    "type": "object",
+                    "required": ["content"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "content": {
+                            "title": "Content",
+                            "description": "A paragraph content written in Markdown.",
+                            "type": "string",
+                            "format": "markdown"
+                        }
+                    }
+                }
+            }
+        },
+        "code": {
+            "title": "Code",
+            "type": "object",
+            "required": ["code"],
+            "additionalProperties": false,
+            "properties": {
+                "code": {
+                    "title": "Code",
+                    "description": "Source code.",
+                    "type": "object",
+                    "required": ["language", "source"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "language": {
+                            "title": "Language",
+                            "description": "Programming language code according to https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases.",
+                            "type": "string"
+                        },
+                        "source": {
+                            "title": "Source",
+                            "description": "Source code",
+                            "type": "string",
+                            "format": "textarea"
+                        }
+                    }
                 }
             }
         },
         "alert": {
-            "description": "an alert message",
+            "title": "Alert",
             "type": "object",
-            "required": ["message", "class"],
+            "required": ["alert"],
+            "additionalProperties": false,
             "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "class": {
-                    "type": "string",
-                    "enum": ["success", "danger", "warning", "info"]
+                "alert": {
+                    "title": "Alert",
+                    "description": "An alert message!",
+                    "type": "object",
+                    "required": ["class", "content"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "class": {
+                            "title": "Class",
+                            "description": "Class of the alert message!",
+                            "type": "string",
+                            "enum": ["success", "danger", "warning", "info"]
+                        },
+                        "content": {
+                            "title": "Content",
+                            "description": "A paragraph content with optionnal Markdown.",
+                            "type": "string",
+                            "format": "textarea"
+                        }
+                    }
                 }
             }
         },
-        "skill": {
-            "description": "a required skill to perfom an operation",
+        "file": {
+            "title": "File",
             "type": "object",
-            "required": ["name"],
+            "required": ["file"],
+            "additionalProperties": false,
             "properties": {
-                "name": {
-                    "type": "string"
+                "file": {
+                    "title": "File",
+                    "description": "A required file, 3D model, source code, etc.",
+                    "type": "object",
+                    "required": ["name", "url"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "name": {
+                            "title": "Name",
+                            "type": "string"
+                        },
+                        "url": { "$ref": "#/definitions/url" }
+                    }
+                }
+            }
+        },
+        "component": {
+            "title": "Component",
+            "type": "object",
+            "required": ["component"],
+            "additionalProperties": false,
+            "properties": {
+                "component": {
+                    "title": "Component",
+                    "description": "Component.",
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "title": "Local component",
+                            "required": ["id", "quantity"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "id": { "$ref": "#/definitions/id" },
+                                "quantity": {
+                                    "title": "Quantity",
+                                    "type": "number",
+                                    "default": 1,
+                                    "minimum": 0
+                                }
+                            }
+                        },
+                        {
+                            "title": "External component",
+                            "required": ["id", "quantity", "github_organization", "github_repository"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "id": { "$ref": "#/definitions/id" },
+                                "quantity": {
+                                    "title": "Quantity",
+                                    "type": "number",
+                                    "default": 1,
+                                    "minimum": 0
+                                },
+                                "github_organization": { "$ref": "#/definitions/github_organization" },
+                                "github_repository": { "$ref": "#/definitions/github_repository" }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "tool": {
+            "title": "Tool",
+            "type": "object",
+            "required": ["tool"],
+            "additionalProperties": false,
+            "properties": {
+                "tool": {
+                    "title": "Tool",
+                    "description": "Tool.",
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "title": "Local tool",
+                            "required": ["id"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "id": { "$ref": "#/definitions/id" }
+                            }
+                        },
+                        {
+                            "title": "External tool",
+                            "required": ["id", "github_organization", "github_repository"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "id": { "$ref": "#/definitions/id" },
+                                "github_organization": { "$ref": "#/definitions/github_organization" },
+                                "github_repository": { "$ref": "#/definitions/github_repository" }
+                            }
+                        }
+                    ]
                 }
             }
         },
         "step": {
-            "description": "describe a step of the tutorial",
+            "title": "Step",
+            "description": "Describe a step of the tutorial.",
             "type": "object",
-            "required": ["title", "content"],
-            "default": {
-                "title": "Nouvelle étape",
-                "content": "À vous de jouer ..."
-            },
+            "required": ["title", "duration"],
             "properties": {
                 "title": {
+                    "title": "Title",
                     "type": "string"
                 },
-                "content": {
-                    "type": "string",
-                    "format": "textarea"
-                },
                 "duration": {
-                    "description": "estimated duration of a step",
-                    "type": "number"
+                    "title": "Duration",
+                    "description": "Estimated duration of a step (HH:MM).",
+                    "type": "string",
+                    "format": "time",
+                    "options": {
+                        "flatpickr": {
+                            "wrap": true,
+                            "time_24hr": true,
+                            "allowInput": true
+                        }
+                    },
+                    "default": "00:05"
                 },
-                "images": {
+                "content": {
+                    "title": "Content",
+                    "description": "Explainations to achieve this step.",
                     "type": "array",
                     "minItems": 1,
-                    "items": { "$ref": "#/definitions/image" }
+                    "items": {
+                        "anyOf": [
+                            { "$ref": "#/definitions/paragraph" },
+                            { "$ref": "#/definitions/alert" },
+                            { "$ref": "#/definitions/image" },
+                            { "$ref": "#/definitions/youtube" },
+                            { "$ref": "#/definitions/code" }
+                        ]
+                    }
                 },
-                "alerts": {
+                "inputs": {
+                    "title": "Inputs",
+                    "description": "List of components, tools or files required to achieve this step.",
                     "type": "array",
                     "minItems": 1,
-                    "items": { "$ref": "#/definitions/alert" }
+                    "items": {
+                        "anyOf": [
+                            { "$ref": "#/definitions/component" },
+                            { "$ref": "#/definitions/tool" },
+                            { "$ref": "#/definitions/file" }
+                        ]
+                    }
                 },
-                "skills": {
+                "outputs": {
+                    "title": "Outputs",
+                    "description": "List of components, tools or files created during this step.",
                     "type": "array",
                     "minItems": 1,
-                    "items": { "$ref": "#/definitions/skill" }
+                    "items": {
+                        "anyOf": [
+                            { "$ref": "#/definitions/component" },
+                            { "$ref": "#/definitions/tool" },
+                            { "$ref": "#/definitions/file" }
+                        ]
+                    }
                 }
             }
         }
     },
-
     "type": "object",
-    "required": ["project"],
-    "properties": {
-        "project": {
-            "description": "Root of the project description",
-            "type": "object",
-            "required": ["full_name", "slug", "short_description", "lang"],
+    "oneOf": [
+        {
+            "title": "JSON SCHEMA for My Workshop projects",
+            "required" : ["project"],
+            "additionalProperties": false,
             "properties": {
-                "full_name": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                },
-                "short_description": {
-                    "type": "string"
-                },
-                "lang": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                },
-                "featured_image": { "$ref": "#/definitions/image" },
-                "links": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": { "$ref": "#/definitions/link" }
-                },
-                "contributors": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": { "$ref": "#/definitions/user" }
-                },
-                "introduction": {
-                    "title": "Introduction",
-                    "description": "Introduction, history of this project.",
-                    "type": "string",
-                    "format": "textarea",
-                    "default": "Comment est né ce projet ? Quelle est son histoire ? Quel est son contexte ?"
-                },
-                "steps": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": { "$ref": "#/definitions/step" }
+                "project": {
+                    "title": "Project",
+                    "description": "Root of the project description.",
+                    "type": "object",
+                    "required": ["full_name", "slug", "short_description", "lang", "license", "about"],
+                    "properties": {
+                        "full_name": {
+                            "title": "Full name",
+                            "type": "string"
+                        },
+                        "complexity": {
+                            "title": "Complexity",
+                            "type": "integer",
+                            "format": "rating",
+                            "maximum": 5,
+                            "exclusiveMaximum": false,
+                            "readonly": false,
+                            "default": 1
+                        },
+                        "slug": {
+                            "title": "Slug",
+                            "type": "string",
+                            "examples": [
+                                "super-fusee"
+                            ]
+                        },
+                        "short_description": {
+                            "title": "Short description",
+                            "type": "string"
+                        },
+                        "lang": {
+                            "title": "Lang",
+                            "description": "Language code according to ISO 639-1.",
+                            "type": "string",
+                            "enum": ["fr", "en", "de"]
+                        },
+                        "license": {
+                            "title": "License",
+                            "description": "Open source license for this project.",
+                            "type": "string",
+                            "enum": [
+                                "CC BY",
+                                "CC BY-SA",
+                                "CC BY-ND",
+                                "CC BY-NC",
+                                "CC BY-NC-SA",
+                                "CC BY-NC-ND",
+                                "GNU AGPLv3",
+                                "GNU GPLv3",
+                                "GNU LGPLv3",
+                                "Mozilla Public License 2.0",
+                                "Apache License 2.0",
+                                "MIT License",
+                                "The Unlicense"
+                            ],
+                            "default": "CC BY"
+                        },
+                        "about": {
+                            "title": "About",
+                            "description": "A brief introduction to the project.",
+                            "$ref": "#/definitions/paragraph",
+                            "default": {
+                                "content": "Quelques mots sur le projet : le contexte, son histoire, etc. ..."
+                            }
+                        },
+                        "featured_image": {
+                            "title": "Featured image",
+                            "$ref": "#/definitions/image"
+                        },
+                        "links": {
+                            "title": "Links",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": { "$ref": "#/definitions/link" }
+                        },
+                        "contributors": {
+                            "title": "Contributors",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "$ref": "#/definitions/user",
+                                "required": ["role"]
+                            }
+                        },
+                        "steps": {
+                            "title": "Steps",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": { "$ref": "#/definitions/step"}
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "title": "JSON SCHEMA for My Workshop components",
+            "required" : ["component"],
+            "additionalProperties": false,
+            "properties": {
+                "component": {
+                    "title": "Component",
+                    "description": "Root of the component description.",
+                    "type": "object",
+                    "required": ["full_name", "short_description", "lang", "unit", "cost"],
+                    "properties": {
+                        "full_name": {
+                            "title": "Full name",
+                            "type": "string"
+                        },
+                        "short_description": {
+                            "title": "Short description",
+                            "type": "string",
+                            "format": "textarea"
+                        },
+                        "lang": {
+                            "title": "Lang",
+                            "description": "Language code according to ISO 639-1.",
+                            "type": "string",
+                            "enum": ["fr", "en", "de"]
+                        },
+                        "unit": {
+                            "title": "Unit",
+                            "type": "string",
+                            "enum": ["kg", "g", "m", "cm", "mm", "m²", "m³", "L", "1"],
+                            "default": "1"
+                        },
+                        "cost": {
+                            "title": "Cost",
+                            "required": ["value", "currency"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "value": {
+                                    "title": "Value",
+                                    "type": "number"
+                                },
+                                "currency": {
+                                    "title": "Currency",
+                                    "description": "Currency designators according to ISO 4217",
+                                    "type": "string",
+                                    "enum": ["EUR", "USD", "GBP"]
+                                }
+                            }
+                        },
+                        "featured_image": {
+                            "title": "Featured image",
+                            "$ref": "#/definitions/image"
+                        },
+                        "brand": {
+                            "title": "Brand",
+                            "type": "string"
+                        },
+                        "model": {
+                            "title": "Model",
+                            "type": "string"
+                        },
+                        "links": {
+                            "title": "Links",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": { "$ref": "#/definitions/link" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "title": "JSON SCHEMA for My Workshop tools",
+            "required" : ["tool"],
+            "additionalProperties": false,
+            "properties": {
+                "tool": {
+                    "title": "Tool",
+                    "description": "Root of the tool description.",
+                    "type": "object",
+                    "required": ["full_name", "short_description", "lang"],
+                    "properties": {
+                        "full_name": {
+                            "title": "Full name",
+                            "type": "string"
+                        },
+                        "short_description": {
+                            "title": "Short description",
+                            "type": "string",
+                            "format": "textarea"
+                        },
+                        "lang": {
+                            "title": "Lang",
+                            "description": "Language code according to ISO 639-1.",
+                            "type": "string",
+                            "enum": ["fr", "en", "de"]
+                        },
+                        "brand": {
+                            "title": "Brand",
+                            "type": "string"
+                        },
+                        "model": {
+                            "title": "Model",
+                            "type": "string"
+                        },
+                        "featured_image": {
+                            "title": "Featured image",
+                            "$ref": "#/definitions/image"
+                        },
+                        "links": {
+                            "title": "Links",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": { "$ref": "#/definitions/link" }
+                        }
+                    }
                 }
             }
         }
-    }
+    ]
 }
