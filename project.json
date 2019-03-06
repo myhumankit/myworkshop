@@ -7,8 +7,7 @@
         "url": {
             "title": "URL",
             "description": "Relative or absolute URL.",
-            "type": "string",
-            "format": "uri"
+            "type": "string"
         },
         "id": {
             "title": "Id",
@@ -318,17 +317,9 @@
                 },
                 "duration": {
                     "title": "Duration",
-                    "description": "Estimated duration of a step (HH:MM).",
-                    "type": "string",
-                    "format": "time",
-                    "options": {
-                        "flatpickr": {
-                            "wrap": true,
-                            "time_24hr": true,
-                            "allowInput": true
-                        }
-                    },
-                    "default": "00:05"
+                    "description": "Estimated duration of a step (seconds).",
+                    "type": "integer",
+                    "default": 300
                 },
                 "content": {
                     "title": "Content",
