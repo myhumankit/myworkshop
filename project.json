@@ -9,9 +9,9 @@
             "description": "Relative or absolute URL.",
             "type": "string"
         },
-        "id": {
-            "title": "Id",
-            "description": "The file name of the JSON component description.",
+        "slug": {
+            "title": "Slug",
+            "description": "The file name of the JSON (without extension).",
             "type": "string"
         },
         "github_organization": {
@@ -57,11 +57,13 @@
                     "title": "Youtube",
                     "description": "Embedded YouTube video.",
                     "type": "object",
-                    "required": ["url", "caption"],
+                    "required": ["id", "caption"],
                     "additionalProperties": false,
                     "properties": {
-                        "url": {
-                            "$ref": "#/definitions/url"
+                        "id": {
+                            "title": "YouTube video Id",
+                            "description": "The end of the URL video",
+                            "type": "string"
                         },
                         "caption": {
                             "title": "Caption",
@@ -240,10 +242,10 @@
                     "oneOf": [
                         {
                             "title": "Local component",
-                            "required": ["id", "quantity"],
+                            "required": ["slug", "quantity"],
                             "additionalProperties": false,
                             "properties": {
-                                "id": { "$ref": "#/definitions/id" },
+                                "slug": { "$ref": "#/definitions/slug" },
                                 "quantity": {
                                     "title": "Quantity",
                                     "type": "number",
@@ -254,10 +256,10 @@
                         },
                         {
                             "title": "External component",
-                            "required": ["id", "quantity", "github_organization", "github_repository"],
+                            "required": ["slug", "quantity", "github_organization", "github_repository"],
                             "additionalProperties": false,
                             "properties": {
-                                "id": { "$ref": "#/definitions/id" },
+                                "slug": { "$ref": "#/definitions/slug" },
                                 "quantity": {
                                     "title": "Quantity",
                                     "type": "number",
@@ -285,18 +287,18 @@
                     "oneOf": [
                         {
                             "title": "Local tool",
-                            "required": ["id"],
+                            "required": ["slug"],
                             "additionalProperties": false,
                             "properties": {
-                                "id": { "$ref": "#/definitions/id" }
+                                "slug": { "$ref": "#/definitions/slug" }
                             }
                         },
                         {
                             "title": "External tool",
-                            "required": ["id", "github_organization", "github_repository"],
+                            "required": ["slug", "github_organization", "github_repository"],
                             "additionalProperties": false,
                             "properties": {
-                                "id": { "$ref": "#/definitions/id" },
+                                "slug": { "$ref": "#/definitions/slug" },
                                 "github_organization": { "$ref": "#/definitions/github_organization" },
                                 "github_repository": { "$ref": "#/definitions/github_repository" }
                             }
@@ -392,11 +394,7 @@
                             "default": 1
                         },
                         "slug": {
-                            "title": "Slug",
-                            "type": "string",
-                            "examples": [
-                                "super-fusee"
-                            ]
+                            "$ref": "#/definitions/slug"
                         },
                         "short_description": {
                             "title": "Short description",
