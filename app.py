@@ -4,6 +4,8 @@ import json
 from jsonschema import validate
 from urllib.parse import urlparse
 from uuid import uuid4
+import hashlib
+
 
 app = Flask(__name__)
 
@@ -108,7 +110,7 @@ def project_details_file_json(organization, repository, file):
     # if project -> some datas are computed
     if "project" in data:
         duration = 0
-        components = []
+        components = {}
         tools = []
         # skills = []
 
@@ -124,12 +126,79 @@ def project_details_file_json(organization, repository, file):
                     input_index = 0
                     for input in step["inputs"]:
                         if "component" in input:
-                            # data["project"]["steps"][step_index]["inputs"][input_index]["component"] = '{"bingo"}'
-                            components.append(
-                                data["project"]["steps"][step_index]["inputs"][
-                                    input_index
-                                ]["component"]
-                            )
+                            # on récupère le composant cible
+                            if ("github_repository" in input["component"]) and (
+                                "github_organization" in input["component"]
+                            ):
+                                component, error = load_github_file(
+                                    input["component"]["github_organization"],
+                                    input["component"]["github_repository"],
+                                    input["component"]["id"],
+                                )
+                                if error:
+                                    component = {"component": {"full_name": "Unknown"}}
+                                id = hashlib.md5(
+                                    input["component"]["github_organization"].encode(
+                                        "UTF-8"
+                                    )
+                                    + input["component"]["github_repository"].encode(
+                                        "UTF-8"
+                                    )
+                                    + input["component"]["id"].encode("UTF-8")
+                                ).hexdigest()
+                            else:
+                                component, error = load_github_file(
+                                    organization, repository, input["component"]["id"]
+                                )
+                                if error:
+                                    component = {"component": {"full_name": "Unknown"}}
+                                id = hashlib.md5(
+                                    organization.encode("UTF-8")
+                                    + repository.encode("UTF-8")
+                                    + input["component"]["id"].encode("UTF-8")
+                                ).hexdigest()
+
+                            # on ajoute les clés du composant input
+                            if ("github_organization" in input["component"]) and (
+                                "github_repository" in input["component"]
+                            ):
+                                component["component"]["github_organization"] = input[
+                                    "component"
+                                ]["github_organization"]
+                                component["component"]["github_repository"] = input[
+                                    "component"
+                                ]["github_repository"]
+                            else:
+                                component["component"][
+                                    "github_organization"
+                                ] = organization
+                                component["component"]["github_repository"] = repository
+
+                            for key in ["quantity", "id"]:
+                                component["component"][key] = input["component"][key]
+
+                            data["project"]["steps"][step_index]["inputs"][input_index][
+                                "component"
+                            ] = component
+
+                            if id in components:
+                                # le composant est déjà dans la liste
+                                components[id]["quantity"] += component["component"][
+                                    "quantity"
+                                ]
+                            else:
+                                components[id] = component["component"]
+
+                            # c = {}
+                            # c.update(component)
+                            # c.update(input)
+
+                            # c = {**input, **component}
+                            # component["component"]["quantity"] = input["component"]["quantity"]
+
+                            # components[id] = component["component"]
+
+                            # components.append(component)
                         if "tool" in input:
                             # data["project"]["steps"][step_index]["inputs"][input_index]["tool"] = '{"bingo"}'
                             tools.append(
