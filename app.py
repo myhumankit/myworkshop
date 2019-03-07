@@ -95,65 +95,66 @@ def page_not_found(e):
     )
 
 
-@app.route("/api/v1/<string:organization>/<string:repository>")
-def project_details_json(organization, repository):
+@app.route("/api/v1/<string:organization>/<string:repository>/<string:file>")
+def project_details_file_json(organization, repository, file):
     # load project datas
-    project, error = load_github_file(organization, repository, "project")
+    data, error = load_github_file(organization, repository, file)
     if error:
         return (
             render_template("error.html", title="400 - Bad Request", error=error),
             400,
         )
 
-    # some datas are computed
-    duration = 0
-    components = []
-    tools = []
-    # skills = []
+    # if project -> some datas are computed
+    if "project" in data:
+        duration = 0
+        components = []
+        tools = []
+        # skills = []
 
-    if "steps" in project["project"]:
-        step_index = 0
-        for step in project["project"]["steps"]:
-            # calculation of cumulative duration
-            if "duration" in step:
-                duration += step["duration"]
+        if "steps" in data["project"]:
+            step_index = 0
+            for step in data["project"]["steps"]:
+                # calculation of cumulative duration
+                if "duration" in step:
+                    duration += step["duration"]
 
-            # on complete les informations sur les inputs
-            if "inputs" in step:
-                input_index = 0
-                for input in step["inputs"]:
-                    if "component" in input:
-                        # project["project"]["steps"][step_index]["inputs"][input_index]["component"] = '{"bingo"}'
-                        components.append(
-                            project["project"]["steps"][step_index]["inputs"][
-                                input_index
-                            ]["component"]
-                        )
-                    if "tool" in input:
-                        # project["project"]["steps"][step_index]["inputs"][input_index]["tool"] = '{"bingo"}'
-                        tools.append(
-                            project["project"]["steps"][step_index]["inputs"][
-                                input_index
-                            ]["tool"]
-                        )
-                    input_index += 1
+                # on complete les informations sur les inputs
+                if "inputs" in step:
+                    input_index = 0
+                    for input in step["inputs"]:
+                        if "component" in input:
+                            # data["project"]["steps"][step_index]["inputs"][input_index]["component"] = '{"bingo"}'
+                            components.append(
+                                data["project"]["steps"][step_index]["inputs"][
+                                    input_index
+                                ]["component"]
+                            )
+                        if "tool" in input:
+                            # data["project"]["steps"][step_index]["inputs"][input_index]["tool"] = '{"bingo"}'
+                            tools.append(
+                                data["project"]["steps"][step_index]["inputs"][
+                                    input_index
+                                ]["tool"]
+                            )
+                        input_index += 1
 
-            step_index += 1
+                step_index += 1
 
-        # calculation of the B.O.M.
+            # calculation of the B.O.M.
 
-        # calculation of the required skills
+            # calculation of the required skills
 
-    # add computed datas to project datas
-    project["project"]["computed"] = {
-        "duration": duration,
-        "components": components,
-        "tools": tools,
-        # "skills": skills,
-    }
+        # add computed datas to project datas
+        data["project"]["computed"] = {
+            "duration": duration,
+            "components": components,
+            "tools": tools,
+            # "skills": skills,
+        }
 
     # project rendering
-    return jsonify(project)
+    return jsonify(data)
 
 
 @app.route("/<string:organization>/<string:repository>")
@@ -217,12 +218,12 @@ def project_details(organization, repository):
     return render_template("project.html", project=project["project"])
 
 
-@app.route("/<string:organization>/<string:repository>/edit")
-def project_details_edit(organization, repository):
+@app.route("/<string:organization>/<string:repository>/<string:file>/edit")
+def project_details_edit(organization, repository, file):
 
     # load project datas
     project, error = load_github_file(
-        organization, repository, "project", to_absolute_url=False
+        organization, repository, file, to_absolute_url=False
     )
     if error:
         return (
