@@ -97,8 +97,7 @@ def page_not_found(e):
     )
 
 
-@app.route("/api/v1/<string:organization>/<string:repository>/<string:file>")
-def project_details_file_json(organization, repository, file):
+def filling_json_file(organization, repository, file):
     # load project datas
     data, error = load_github_file(organization, repository, file)
     if error:
@@ -259,69 +258,27 @@ def project_details_file_json(organization, repository, file):
             # "skills": skills,
         }
 
+    return data
+
+
+@app.route("/api/v1/<string:organization>/<string:repository>/<string:file>")
+def project_details_file_json(organization, repository, file):
+
+    # fill json with computed datas
+    data = filling_json_file(organization, repository, file)
+
     # project rendering
     return jsonify(data)
 
 
 @app.route("/<string:organization>/<string:repository>")
 def project_details(organization, repository):
-    # load project datas
-    project, error = load_github_file(organization, repository, "project")
-    if error:
-        return (
-            render_template("error.html", title="400 - Bad Request", error=error),
-            400,
-        )
 
-    # load local libraries
-    components_library, error = load_github_file(organization, repository, "components")
-    if error:
-        components_library = {"components": []}
-
-    # some datas are computed
-    duration = 0
-    components = []
-    skills = []
-
-    if "steps" in project["project"]:
-        step_index = 0
-        for step in project["project"]["steps"]:
-            # calculation of cumulative duration
-            if "duration" in step:
-                duration += step["duration"]
-
-            # on complete les informations sur les composants par ceux issus de la librairie
-            if "components" in step:
-                component_index = 0
-                for component in step["components"]:
-                    project["project"]["steps"][step_index]["components"][
-                        component_index
-                    ] = component_complete(component, components_library)
-                    component_index += 1
-
-            step_index += 1
-
-        # calculation of the B.O.M.
-        for step in project["project"]["steps"]:
-            if "components" in step:
-                for component in step["components"]:
-                    components.append(component)
-
-        # calculation of the required skills
-        for step in project["project"]["steps"]:
-            if "skills" in step:
-                for skill in step["skills"]:
-                    skills.append(skill)
-
-    # add computed datas to project datas
-    project["project"]["computed"] = {
-        "duration": duration,
-        "components": components,
-        "skills": skills,
-    }
+    # fill json with computed datas
+    data = filling_json_file(organization, repository, "project")
 
     # project rendering
-    return render_template("project.html", project=project["project"])
+    return render_template("project.html", project=data["project"])
 
 
 @app.route("/<string:organization>/<string:repository>/<string:file>/edit")
