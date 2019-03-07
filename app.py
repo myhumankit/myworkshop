@@ -5,7 +5,7 @@ from jsonschema import validate
 from urllib.parse import urlparse
 from uuid import uuid4
 import hashlib
-
+import copy
 
 app = Flask(__name__)
 
@@ -111,7 +111,7 @@ def project_details_file_json(organization, repository, file):
     if "project" in data:
         duration = 0
         components = {}
-        tools = []
+        tools = {}
         # skills = []
 
         if "steps" in data["project"]:
@@ -133,10 +133,12 @@ def project_details_file_json(organization, repository, file):
                                 component, error = load_github_file(
                                     input["component"]["github_organization"],
                                     input["component"]["github_repository"],
-                                    input["component"]["id"],
+                                    input["component"]["slug"],
                                 )
                                 if error:
-                                    component = {"component": {"full_name": "Unknown"}}
+                                    component = {
+                                        "component": {"full_name": "Unknown component"}
+                                    }
                                 id = hashlib.md5(
                                     input["component"]["github_organization"].encode(
                                         "UTF-8"
@@ -144,18 +146,20 @@ def project_details_file_json(organization, repository, file):
                                     + input["component"]["github_repository"].encode(
                                         "UTF-8"
                                     )
-                                    + input["component"]["id"].encode("UTF-8")
+                                    + input["component"]["slug"].encode("UTF-8")
                                 ).hexdigest()
                             else:
                                 component, error = load_github_file(
-                                    organization, repository, input["component"]["id"]
+                                    organization, repository, input["component"]["slug"]
                                 )
                                 if error:
-                                    component = {"component": {"full_name": "Unknown"}}
+                                    component = {
+                                        "component": {"full_name": "Unknown component"}
+                                    }
                                 id = hashlib.md5(
                                     organization.encode("UTF-8")
                                     + repository.encode("UTF-8")
-                                    + input["component"]["id"].encode("UTF-8")
+                                    + input["component"]["slug"].encode("UTF-8")
                                 ).hexdigest()
 
                             # on ajoute les clés du composant input
@@ -174,45 +178,78 @@ def project_details_file_json(organization, repository, file):
                                 ] = organization
                                 component["component"]["github_repository"] = repository
 
-                            for key in ["quantity", "id"]:
+                            for key in ["quantity", "slug"]:
                                 component["component"][key] = input["component"][key]
 
                             data["project"]["steps"][step_index]["inputs"][input_index][
                                 "component"
-                            ] = component
+                            ] = copy.deepcopy(component["component"])
 
                             if id in components:
                                 # le composant est déjà dans la liste
-                                components[id]["quantity"] += component["component"][
-                                    "quantity"
+                                components[id]["quantity"] = (
+                                    components[id]["quantity"]
+                                    + component["component"]["quantity"]
+                                )
+                            else:
+                                components[id] = copy.deepcopy(component["component"])
+
+                        if "tool" in input:
+                            if ("github_repository" in input["tool"]) and (
+                                "github_organization" in input["tool"]
+                            ):
+                                tool, error = load_github_file(
+                                    input["tool"]["github_organization"],
+                                    input["tool"]["github_repository"],
+                                    input["tool"]["slug"],
+                                )
+                                if error:
+                                    tool = {"tool": {"full_name": "Unknown tool"}}
+                                id = hashlib.md5(
+                                    input["tool"]["github_organization"].encode("UTF-8")
+                                    + input["tool"]["github_repository"].encode("UTF-8")
+                                    + input["tool"]["slug"].encode("UTF-8")
+                                ).hexdigest()
+                            else:
+                                tool, error = load_github_file(
+                                    organization, repository, input["tool"]["slug"]
+                                )
+                                if error:
+                                    tool = {"tool": {"full_name": "Unknown tool"}}
+                                id = hashlib.md5(
+                                    organization.encode("UTF-8")
+                                    + repository.encode("UTF-8")
+                                    + input["tool"]["slug"].encode("UTF-8")
+                                ).hexdigest()
+
+                            # on ajoute les clés de l'outil input
+                            if ("github_organization" in input["tool"]) and (
+                                "github_repository" in input["tool"]
+                            ):
+                                tool["tool"]["github_organization"] = input["tool"][
+                                    "github_organization"
+                                ]
+                                tool["tool"]["github_repository"] = input["tool"][
+                                    "github_repository"
                                 ]
                             else:
-                                components[id] = component["component"]
+                                tool["tool"]["github_organization"] = organization
+                                tool["tool"]["github_repository"] = repository
 
-                            # c = {}
-                            # c.update(component)
-                            # c.update(input)
+                            for key in ["slug"]:
+                                tool["tool"][key] = input["tool"][key]
 
-                            # c = {**input, **component}
-                            # component["component"]["quantity"] = input["component"]["quantity"]
+                            data["project"]["steps"][step_index]["inputs"][input_index][
+                                "tool"
+                            ] = copy.deepcopy(tool["tool"])
 
-                            # components[id] = component["component"]
+                            if id not in tools:
+                                # l'outil n'est pas encore dans la liste
+                                tools[id] = copy.deepcopy(tool["tool"])
 
-                            # components.append(component)
-                        if "tool" in input:
-                            # data["project"]["steps"][step_index]["inputs"][input_index]["tool"] = '{"bingo"}'
-                            tools.append(
-                                data["project"]["steps"][step_index]["inputs"][
-                                    input_index
-                                ]["tool"]
-                            )
                         input_index += 1
 
                 step_index += 1
-
-            # calculation of the B.O.M.
-
-            # calculation of the required skills
 
         # add computed datas to project datas
         data["project"]["computed"] = {
