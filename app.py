@@ -7,8 +7,17 @@ from uuid import uuid4
 import hashlib
 import copy
 import markdown2
+import humanize
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def utility_processor():
+    def format_duration(duration):
+        return humanize.naturaldelta(duration)
+
+    return dict(format_duration=format_duration)
 
 
 def absolute_url(document, base_url):
@@ -282,11 +291,7 @@ def project_details(organization, repository):
     if "steps" in data["project"]:
         for step in data["project"]["steps"]:
             if "content" in step:
-                for input in step["content"]:
-                    if "paragraph" in input:
-                        input["paragraph"]["content"] = markdown2.markdown(
-                            input["paragraph"]["content"]
-                        )
+                step["content"] = markdown2.markdown(step["content"])
 
     # project rendering
     return render_template("project.html", project=data["project"])
