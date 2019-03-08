@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 import hashlib
 import copy
+import markdown2
 
 app = Flask(__name__)
 
@@ -276,6 +277,16 @@ def project_details(organization, repository):
 
     # fill json with computed datas
     data = filling_json_file(organization, repository, "project")
+
+    # transform markdown to html
+    if "steps" in data["project"]:
+        for step in data["project"]["steps"]:
+            if "content" in step:
+                for input in step["content"]:
+                    if "paragraph" in input:
+                        input["paragraph"]["content"] = markdown2.markdown(
+                            input["paragraph"]["content"]
+                        )
 
     # project rendering
     return render_template("project.html", project=data["project"])
