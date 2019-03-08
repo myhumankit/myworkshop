@@ -129,26 +129,9 @@
         },
         "paragraph": {
             "title": "Paragraph",
-            "type": "object",
-            "required": ["paragraph"],
-            "additionalProperties": false,
-            "properties": {
-                "paragraph": {
-                    "title": "Paragraph",
-                    "description": "A generic paragraph.",
-                    "type": "object",
-                    "required": ["content"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "content": {
-                            "title": "Content",
-                            "description": "A paragraph content written in Markdown.",
-                            "type": "string",
-                            "format": "markdown"
-                        }
-                    }
-                }
-            }
+            "description": "A textarea written in Markdown.",
+            "type": "string",
+            "format": "markdown"
         },
         "code": {
             "title": "Code",
@@ -311,7 +294,7 @@
             "title": "Step",
             "description": "Describe a step of the tutorial.",
             "type": "object",
-            "required": ["title", "duration"],
+            "required": ["title", "duration", "content"],
             "properties": {
                 "title": {
                     "title": "Title",
@@ -325,16 +308,17 @@
                 },
                 "content": {
                     "title": "Content",
-                    "description": "Explainations to achieve this step.",
+                    "$ref": "#/definitions/paragraph"
+                },
+                "media": {
+                    "title": "Media",
+                    "description": "A list of media : images, videos, etc.",
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "anyOf": [
-                            { "$ref": "#/definitions/paragraph" },
-                            { "$ref": "#/definitions/alert" },
                             { "$ref": "#/definitions/image" },
-                            { "$ref": "#/definitions/youtube" },
-                            { "$ref": "#/definitions/code" }
+                            { "$ref": "#/definitions/youtube" }
                         ]
                     }
                 },
@@ -431,9 +415,7 @@
                             "title": "About",
                             "description": "A brief introduction to the project.",
                             "$ref": "#/definitions/paragraph",
-                            "default": {
-                                "content": "Quelques mots sur le projet : le contexte, son histoire, etc. ..."
-                            }
+                            "default": "Quelques mots sur le projet : le contexte, son histoire, etc. ..."
                         },
                         "featured_image": {
                             "title": "Featured image",
