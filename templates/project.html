@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ project.full_name }}{% endblock %}
+{% block head %}
+<!-- highlight.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/cpp.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}
 {% block content %}
 <div class="jumbotron">
     <div class="container">
@@ -7,19 +13,27 @@
         <p class="lead">{{ project.short_description }}</p>
         <hr class="my-4">
         <p>
-            Durée estimée : <span class="badge badge-danger">{{ project.computed.duration }} heures</span>
+            Durée estimée : <span class="badge badge-danger">{{ project.computed.duration }} s</span>
             <br>
             B.O.M. :
             {% for component in project.computed.components %}
-            <span class="badge badge-dark">{{ component.name }} <span class="badge badge-light">{{ component.quantity|string if component.quantity }} {{ component.unit if component.unit }}</span></span>
+            {{ component }}
+            <span class="badge badge-dark">{{ component.full_name }} <span class="badge badge-light">{{ component.quantity|string if component.quantity }} {{ component.unit if component.unit }}</span></span>
             {% endfor %}
+            <br>
+            Outils nécessaires :
+            {% for tool in project.computed.tools %}
+            <span class="badge badge-success">{{ tool.full_name }}</span>
+            {% endfor %}
+            <!--
             <br>
             Compétences requises :
             {% for skill in project.computed.skills %}
             <span class="badge badge-success">{{ skill.name }}</span>
             {% endfor %}
+            -->
         </p>
-        <p class="text-right"><a class="btn btn-primary" href="{{ request.path }}/edit" role="button">Éditer</a></p>
+        <p class="text-right"><a class="btn btn-primary" href="{{ request.path }}/project/edit" role="button">Éditer</a></p>
     </div>
 </div>
 
@@ -31,8 +45,11 @@
             <div class="alert alert-danger" role="alert">
                 Attention : Cette documentation est fournie à titre informatif. En aucun cas l'auteur de cette documentation ne peux être tenu responsable d'un éventuel problème.
             </div>
-            {% if project.featured_image.url %}
-            <img src="{{ project.featured_image.url }}" class="d-block w-100 img-thumbnail">
+            {% if project.featured_image.image.url %}
+            <figure class="figure">
+                <img src="{{ project.featured_image.image.url }}" class="figure-img img-fluid rounded">
+                <figcaption class="figure-caption">{{ project.featured_image.image.caption }}</figcaption>
+            </figure>
             {% endif %}
         </div>
     </div>
@@ -54,7 +71,7 @@
             <h2>Liens</h2>
             <ul>
                 {% for link in project.links %}
-                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                <li><a href="{{ link.url }}">{% if link.fa5_icon %}<i class="{{ link.fa5_icon }}"></i> {% endif %}{{ link.text }}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -68,18 +85,20 @@
         <div class="col-md-3">
             <!-- menu of the step -->
             {% if step.duration %}
-            <button type="button" class="btn btn-sm btn-danger">{{ step.duration }} heures</button>
+            <button type="button" class="btn btn-sm btn-danger">{{ step.duration }} s</button><br/>
             {% endif %}
 
-            {% if step.components %}
-            {% for component in step.components %}
-            <button type="button" class="btn btn-sm btn-dark">{{ component.name }} <span class="badge badge-light">{{ component.quantity|string if component.quantity }} {{ component.unit if component.unit }}</span></button>
-            {% endfor %}
+            {% if step.inputs %}
+            {% for input in step.inputs %}
+
+            {% if input.component %}
+            <button type="button" class="btn btn-sm btn-dark">{{ input.component.full_name }} <span class="badge badge-light">{{ input.component.quantity|string if input.component.quantity }} {{ input.component.unit if input.component.unit }}</span></button><br/>
             {% endif %}
 
-            {% if step.skills %}
-            {% for skill in step.skills %}
-            <button type="button" class="btn btn-sm btn-success">{{ skill.name }}</button>
+            {% if input.tool %}
+            <button type="button" class="btn btn-sm btn-success">{{ input.tool.full_name }}</button><br/>
+            {% endif %}
+
             {% endfor %}
             {% endif %}
 
@@ -118,15 +137,42 @@
             </div>
             {% endif %}
 
-            {% if step.alerts %}
-            {% for alert in step.alerts %}
-            <div class="alert alert-{{ alert.class }}" role="alert">
-                {{ alert.message }}
-            </div>
-            {% endfor %}
+            {% if step.content %}
+            {% for item in step.content %}
+
+            {% if item.paragraph %}
+            <div>{{ item.paragraph.content|safe }}</div>
             {% endif %}
 
-            <p>{{ step.content }}</p>
+            {% if item.alert %}
+            <div class="alert alert-{{ item.alert.class }}" role="alert">
+                {{ item.alert.content }}
+            </div>
+            {% endif %}
+
+            {% if item.image %}
+            <div>
+                <figure class="figure">
+                    <img src="{{ item.image.url }}" class="figure-img img-fluid rounded">
+                    <figcaption class="figure-caption">{{ item.image.caption }}</figcaption>
+                </figure>
+            </div>
+            {% endif %}
+
+            {% if item.youtube %}
+            <div>
+                <iframe width="854" height="480" src="https://www.youtube.com/embed/{{ item.youtube.id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            {% endif %}
+
+            {% if item.code %}
+            <figure class="highlight">
+                <pre><code class="{{ item.code.language }}">{{ item.code.source }}</code></pre>
+            </figure>
+            {% endif %}
+
+            {% endfor %}
+            {% endif %}
         </div>
     </div>
     {% endfor %}
