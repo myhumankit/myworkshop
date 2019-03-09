@@ -1,3 +1,28 @@
+{% macro badge_component(component) -%}
+    <button type="button" class="btn btn-sm btn-success">
+        <i class="fas fa-dolly"></i>
+        {{ component.full_name }}
+        <span class="badge badge-light">
+            {{ component.quantity|string if component.quantity }}
+            {{ component.unit|string if component.unit != "1" }}
+        </span>
+    </button>
+{%- endmacro %}
+
+{% macro badge_tool(tool) -%}
+    <button type="button" class="btn btn-sm btn-dark">
+        <i class="fas fa-tools"></i>
+        {{ tool.full_name }}
+    </button>
+{%- endmacro %}
+
+{% macro badge_file(file) -%}
+    <a class="btn btn-sm btn-primary" href="{{ file.url }}" role="button">
+        <i class="far fa-file"></i>
+        {{ file.name }}
+    </a>
+{%- endmacro %}
+
 {% extends "base.html" %}
 {% block title %}{{ project.full_name }}{% endblock %}
 {% block head %}
@@ -9,119 +34,174 @@
 {% block content %}
 <div class="jumbotron">
     <div class="container">
-        <h1 class="display-4">{{ project.full_name }}</h1>
-        <p class="lead">{{ project.short_description }}</p>
-        <hr class="my-4">
-        <p>
-            <span class="badge badge-danger"><i class="far fa-clock"></i> {{ format_duration(project.computed.duration) }}</span>
-            <br>
-            B.O.M. :
-            {% for component in project.computed.components %}
-            {{ component }}
-            <span class="badge badge-success">{{ component.full_name }} <span class="badge badge-light">{{ component.quantity|string if component.quantity }} {{ component.unit if component.unit }}</span></span>
-            {% endfor %}
-            <br>
-            Outils nécessaires :
-            {% for tool in project.computed.tools %}
-            <span class="badge badge-dark">{{ tool.full_name }}</span>
-            {% endfor %}
-            <!--
-            <br>
-            Compétences requises :
-            {% for skill in project.computed.skills %}
-            <span class="badge badge-success">{{ skill.name }}</span>
-            {% endfor %}
-            -->
-        </p>
-        <p class="text-right"><a class="btn btn-primary" href="{{ request.path }}/project/edit" role="button">Éditer</a></p>
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4">{{ project.full_name }}</h1>
+                <p class="lead">{{ project.short_description }}</p>
+                <span class="badge badge-secondary">
+                    Licence
+                    <i class="fab fa-creative-commons"></i>
+                    <i class="fab fa-creative-commons-by"></i>
+                </span>
+                <span class="badge badge-danger">
+                    <i class="far fa-clock"></i>
+                    {{ format_duration(project.computed.duration) }}
+                </span>
+                <span class="badge badge-primary">
+                    <i class="fas fa-money-bill-alt"></i>
+                    {{ project.computed.cost.value }}
+                    {{ project.computed.cost.currency }}
+                </span>
+            </div>
+            <div class="col-md-4">
+                <p class="text-right">
+                    <a class="btn btn-light btn-sm" href="{{ request.path }}/project/edit" role="button"><i class="fas fa-edit"></i></a>
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="container">
 
+    {% if project.featured_image.image.url %}
     <div class="row">
         <div class="col-md-12">
-            <h2>Présentation du projet</h2>
-            <div class="alert alert-danger" role="alert">
-                Attention : Cette documentation est fournie à titre informatif. En aucun cas l'auteur de cette documentation ne peux être tenu responsable d'un éventuel problème.
-            </div>
-            {% if project.featured_image.image.url %}
             <figure class="figure">
                 <img src="{{ project.featured_image.image.url }}" class="figure-img img-fluid rounded">
                 <figcaption class="figure-caption">{{ project.featured_image.image.caption }}</figcaption>
             </figure>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <div class="alert alert-danger" role="alert">
+                <strong>Attention</strong> : Cette documentation est fournie à titre informatif. En aucun cas l'auteur de cette documentation ne peux être tenu responsable d'un éventuel problème.
+            </div>
+
+            <h2 class="text-center">À propos</h2>
+            <div class="col-md-12">
+                {{ project.about|safe }}
+            </div>
+            <br/>
+            <br/>
+
+            {% if project.contributors %}
+            <h2 class="text-center"><i class="far fa-user"></i> Contributeurs</h2>
+            <div>
+            {% for contributor in project.contributors %}
+                <i class="far fa-user"></i>
+                {{ contributor.full_name }}
+                {{ '('+contributor.role+')' if contributor.role }}
+                <br/>
+            {% endfor %}
+            </div>
             {% endif %}
-        </div>
-    </div>
+            <br/>
+            <br/>
 
-    <div class="row">
-        {% if project.contributors %}
-        <div class="col-md-4">
-            <h2>Contributeurs</h2>
-            <ul>
-                {% for contributor in project.contributors %}
-                <li>{{ contributor.full_name }} {{ '('+contributor.role+')' if contributor.role }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+            {% if project.links %}
+            <h2 class="text-center"><i class="fas fa-link"></i> Liens</h2>
+            <div>
+            {% for link in project.links %}
+                <a href="{{ link.url }}">
+                {% if link.fa5_icon %}
+                    <i class="{{ link.fa5_icon }}"></i>
+                {% else %}
+                    <i class="fas fa-link"></i>
+                {% endif %}
+                    {{ link.text }}
+                </a>
+                <br/>
+            {% endfor %}
+            </div>
+            {% endif %}
+            <br/>
+            <br/>
 
-        {% if project.links %}
-        <div class="col-md-4">
-            <h2>Liens</h2>
-            <ul>
-                {% for link in project.links %}
-                <li><a href="{{ link.url }}">{% if link.fa5_icon %}<i class="{{ link.fa5_icon }}"></i> {% endif %}{{ link.text }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-    </div>
+            <h2 class="text-center"><i class="fas fa-tools"></i> Outils</h2>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for id in project.computed.tools %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ project.computed.tools[id].full_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br/>
+            <br/>
 
-    <hr>
-    <div class="row">
-        <div class="col-md-3">
-        </div>
-        <div class="col-md-9">
-            <h2>À propos</h2>
-            {{ project.about|safe }}
+            <h2 class="text-center"><i class="fas fa-dolly"></i> Composants</h2>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Quantité</th>
+                        <th scope="col">Prix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for id in project.computed.components %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ project.computed.components[id].full_name }}</td>
+                        <td>
+                            {{ project.computed.components[id].quantity|string }}
+                            {{ project.computed.components[id].unit|string if project.computed.components[id].unit != "1" }}
+                        </td>
+                        <td>
+                            {% if project.computed.components[id].cost %}
+                                {{ (project.computed.components[id].cost.value * project.computed.components[id].quantity) }}
+                                {{ project.computed.components[id].cost.currency }}
+                            {% else %}
+                                ?
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
     {% if project.steps %}
     {% for step in project.steps %}
-    <hr>
+
+    <br/>
+    <br/>
+    <br/>
+
     <div class="row">
-        <div class="col-md-3">
-            <!-- menu of the step -->
-            {% if step.duration %}
-            <button type="button" class="btn btn-sm btn-danger"><i class="far fa-clock"></i> {{ format_duration(step.duration) }}</button><br/>
-            {% endif %}
-
-            {% if step.inputs %}
-            {% for input in step.inputs %}
-
-            {% if input.component %}
-            <button type="button" class="btn btn-sm btn-success"><i class="fas fa-dolly"></i> {{ input.component.full_name }} <span class="badge badge-light">{{ input.component.quantity|string if input.component.quantity }} {{ input.component.unit|string if input.component.unit != "1" }}</span></button><br/>
-            {% endif %}
-
-            {% if input.tool %}
-            <button type="button" class="btn btn-sm btn-dark"><i class="fas fa-tools"></i> {{ input.tool.full_name }}</button><br/>
-            {% endif %}
-
-            {% if input.file %}
-            <a class="btn btn-sm btn-primary" href="{{ input.file.url }}" role="button"><i class="far fa-file"></i> {{ input.file.name }}</a><br/>
-            {% endif %}
-
-            {% endfor %}
-            {% endif %}
-
+        <div class="col-md-12">
+            <h2 class="text-center">Étape {{ loop.index }} - {{ step.title[0]|upper }}{{ step.title[1:] }}</h2>
         </div>
-        <div class="col-md-9">
-            <!-- body of the step -->
-            <h2>Étape {{ loop.index }} : {{ step.title }}</h2>
+        {% if step.duration %}
+        <div class="col-md-12 text-center">
+            <span class="badge badge-danger">
+                <i class="far fa-clock"></i>
+                {{ format_duration(step.duration) }}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+    <br/>
 
-            {% if step.media %}
+    {% if step.media %}
+    <div class="row">
+        <div class="col-md-12">
             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
                     {% for media in step.media %}
@@ -153,50 +233,93 @@
                     <span class="sr-only">Next</span>
                 </a>
             </div>
-            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 
-            {% if step.content %}
-            <div>{{ step.content|safe }}</div>
-            {% endif %}
+    <div class="row">
+        <div class="col-md-3">
+            <!-- menu of the step -->
+            <!--
+            {% if step.inputs %}
+                {% for input in step.inputs %}
+                <div>
 
-<!--
-            {% if step.content %}
-            {% for item in step.content %}
+                    {% if input.component %}
+                        {{ badge_component(input.component) }}
+                    {% endif %}
 
-            {% if item.paragraph %}
-            <div>{{ item.paragraph.content|safe }}</div>
-            {% endif %}
+                    {% if input.tool %}
+                        {{ badge_tool(input.tool) }}
+                    {% endif %}
 
-            {% if item.alert %}
-            <div class="alert alert-{{ item.alert.class }}" role="alert">
-                {{ item.alert.content }}
-            </div>
-            {% endif %}
+                    {% if input.file %}
+                        {{ badge_file(input.file) }}
+                    {% endif %}
 
-            {% if item.image %}
-            <div>
-                <figure class="figure">
-                    <img src="{{ item.image.url }}" class="figure-img img-fluid rounded">
-                    <figcaption class="figure-caption">{{ item.image.caption }}</figcaption>
-                </figure>
-            </div>
-            {% endif %}
-
-            {% if item.youtube %}
-            <div>
-                <iframe width="854" height="480" src="https://www.youtube.com/embed/{{ item.youtube.id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            {% endif %}
-
-            {% if item.code %}
-            <figure class="highlight">
-                <pre><code class="{{ item.code.language }}">{{ item.code.source }}</code></pre>
-            </figure>
-            {% endif %}
-
-            {% endfor %}
+                </div>
+                {% endfor %}
             {% endif %}
             -->
+
+            {% if step.inputs %}
+                {% for input in step.inputs %}
+                <div>
+                    <ul class="list-group">
+                        {% if input.component %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-dolly"></i> {{ input.component.full_name }}</span>
+                            <span class="badge badge-primary badge-pill">
+                                {{ input.component.quantity|string if input.component.quantity }}
+                                {{ input.component.unit|string if input.component.unit != "1" }}
+                            </span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endfor %}
+                {% for input in step.inputs %}
+                <div>
+                    <ul class="list-group">
+                        {% if input.tool %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-tools"></i> {{ input.tool.full_name }}</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {% if step.alerts %}
+                {% for alert in step.alerts %}
+                <div class="alert alert-{{ alert.class }}" role="alert">{{ alert.message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- content of the step -->
+            <div>{{ step.content|safe }}</div>
+        </div>
+
+        <div class="col-md-3">
+            {% if step.inputs %}
+                {% for input in step.inputs %}
+                <div>
+                    <ul class="list-group">
+                        {% if input.file %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="far fa-file"></i> {{ input.file.name }}</span>
+                            <a href="{{ input.file.url }}">
+                                <i class="fas fa-file-download"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
     {% endfor %}
