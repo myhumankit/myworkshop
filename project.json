@@ -135,30 +135,22 @@
         },
         "alert": {
             "title": "Alert",
+            "description": "An alert message!",
             "type": "object",
-            "required": ["alert"],
+            "required": ["class", "message"],
             "additionalProperties": false,
             "properties": {
-                "alert": {
-                    "title": "Alert",
-                    "description": "An alert message!",
-                    "type": "object",
-                    "required": ["class", "content"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "class": {
-                            "title": "Class",
-                            "description": "Class of the alert message!",
-                            "type": "string",
-                            "enum": ["success", "danger", "warning", "info"]
-                        },
-                        "content": {
-                            "title": "Content",
-                            "description": "A paragraph content with optionnal Markdown.",
-                            "type": "string",
-                            "format": "textarea"
-                        }
-                    }
+                "class": {
+                    "title": "Class",
+                    "description": "Class of the alert message.",
+                    "type": "string",
+                    "enum": ["success", "danger", "warning", "info"]
+                },
+                "message": {
+                    "title": "Message",
+                    "description": "Content of the alert message.",
+                    "type": "string",
+                    "format": "textarea"
                 }
             }
         },
@@ -281,6 +273,12 @@
                 "content": {
                     "title": "Content",
                     "$ref": "#/definitions/paragraph"
+                },
+                "alerts": {
+                    "title": "Alerts",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/alert" }
                 },
                 "media": {
                     "title": "Media",
