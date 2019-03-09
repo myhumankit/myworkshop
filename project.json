@@ -133,34 +133,6 @@
             "type": "string",
             "format": "markdown"
         },
-        "code": {
-            "title": "Code",
-            "type": "object",
-            "required": ["code"],
-            "additionalProperties": false,
-            "properties": {
-                "code": {
-                    "title": "Code",
-                    "description": "Source code.",
-                    "type": "object",
-                    "required": ["language", "source"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "language": {
-                            "title": "Language",
-                            "description": "Programming language code according to https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases.",
-                            "type": "string"
-                        },
-                        "source": {
-                            "title": "Source",
-                            "description": "Source code",
-                            "type": "string",
-                            "format": "textarea"
-                        }
-                    }
-                }
-            }
-        },
         "alert": {
             "title": "Alert",
             "type": "object",
