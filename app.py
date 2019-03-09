@@ -260,9 +260,26 @@ def filling_json_file(organization, repository, file):
 
                 step_index += 1
 
+        # total cost calculation
+        value = 0
+        currency = "EUR"
+        for id in components:
+            if "cost" in components[id]:
+                if components[id]["cost"]["currency"] == currency:
+                    value += (
+                        components[id]["cost"]["value"] * components[id]["quantity"]
+                    )
+                elif components[id]["cost"]["currency"] == "USD":
+                    value += (
+                        0.89
+                        * components[id]["cost"]["value"]
+                        * components[id]["quantity"]
+                    )
+
         # add computed datas to project datas
         data["project"]["computed"] = {
             "duration": duration,
+            "cost": {"value": value, "currency": currency},
             "components": components,
             "tools": tools,
             # "skills": skills,
