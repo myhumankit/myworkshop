@@ -338,15 +338,6 @@
                             "title": "Full name",
                             "type": "string"
                         },
-                        "complexity": {
-                            "title": "Complexity",
-                            "type": "integer",
-                            "format": "rating",
-                            "maximum": 5,
-                            "exclusiveMaximum": false,
-                            "readonly": false,
-                            "default": 1
-                        },
                         "slug": {
                             "$ref": "#/definitions/slug"
                         },
