@@ -162,7 +162,9 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <img src="{{ project.computed.tools[id].featured_image.image.url }}" class="img-fluid" alt="Responsive image">
+                                            {% if project.computed.tools[id].featured_image %}
+                                                <img src="{{ project.computed.tools[id].featured_image.image.url }}" class="img-fluid" alt="Responsive image">
+                                            {% endif %}
                                             {{ project.computed.tools[id].short_description }}
                                             {% if project.computed.tools[id].links %}
                                             <hr>
@@ -223,7 +225,9 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <img src="{{ project.computed.components[id].featured_image.image.url }}" class="img-fluid" alt="Responsive image">
+                                            {% if project.computed.components[id].featured_image %}
+                                                <img src="{{ project.computed.components[id].featured_image.image.url }}" class="img-fluid" alt="Responsive image">
+                                            {% endif %}
                                             {{ project.computed.components[id].short_description }}
                                             {% if project.computed.components[id].links %}
                                             <hr>
