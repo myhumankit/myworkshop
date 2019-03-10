@@ -9,11 +9,58 @@
 </div>
 
 <div class="container">
+
     <div class="row">
-        <div class="col-md-12">
-            <h2>Bienvenue</h2>
-            <p>Ce site est en cours de construction ...</p>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <h2 class="text-center">À propos</h2>
+            <br/>
+            <p><strong>My Workshop</strong> est un générateur de documentation pour les projets open hardware à partir d'un simple fichier nommé <strong>project.json</strong> placé à la racine d'un dépôt GitHub.</p>
+            <p>Si ce fichier <strong>project.json</strong> respecte le <a href="https://raw.githubusercontent.com/myhumankit/myworkshop/master/project.json">JSON Schema My Workshop</a>, il suffit alors de consulter l'adresse <strong>{{ request.url }}{github_organization}/{github_repository}</strong> pour visualiser la documentation générée à la volée.</p>
+            <p>Le code source du projet est disponible sur <a href="https://github.com/myhumankit/myworkshop">GitHub</a>.</p>
+            <p>Pour faciliter l'écriture de la documentation, un <a href="{{ url_for("project_details_new") }}">éditeur en ligne est disponible</a>. Celui-ci vous permet d'exporter je fichier <strong>project.json</strong> respectant le <a href="https://raw.githubusercontent.com/myhumankit/myworkshop/master/project.json">JSON Schema My Workshop</a>.</p>
+            <br/>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center">Derniers projets consultés</h2>
+            <br/>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for id in projects %}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <img src="{{ projects[id].featured_image }}" class="card-img-top" alt="{{ projects[id].full_name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ projects[id].full_name }}</h5>
+                    <p class="card-text">{{ projects[id].short_description }}</p>
+                    <a href="{{ url_for('project_details', organization=projects[id].github_organization, repository=projects[id].github_repository) }}" class="btn btn-primary"><i class="fas fa-angle-right"></i> Consulter</a>
+                </div>
+                <div class="card-footer text-muted">
+                    <span class="badge badge-secondary">
+                        Licence
+                        <i class="fab fa-creative-commons"></i>
+                        <i class="fab fa-creative-commons-by"></i>
+                    </span>
+                    <span class="badge badge-danger">
+                        <i class="far fa-clock"></i>
+                        {{ format_duration(projects[id].duration) }}
+                    </span>
+                    <span class="badge badge-primary">
+                        <i class="fas fa-money-bill-alt"></i>
+                        {{ projects[id].cost.value }}
+                        {{ projects[id].cost.currency }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
 </div> <!-- /container -->
 {% endblock %}

@@ -94,7 +94,38 @@ def component_complete(component, components_library):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    projects = {
+        "1": {
+            "full_name": "Bracelet universel",
+            "github_repository": "bracelet-universel",
+            "github_organization": "myhumankit",
+            "license": "CC BY",
+            "short_description": "Un bracelet pour les gouverner tous !",
+            "featured_image": "https://raw.githubusercontent.com/myhumankit/bracelet-universel/master/images/proto1.jpg",
+            "cost": {"value": 23.626, "currency": "EUR"},
+            "duration": 3600,
+        },
+        "2": {
+            "full_name": "Pédale clavier souris",
+            "github_repository": "pedale-clavier-souris",
+            "github_organization": "myhumankit",
+            "short_description": "Une pédale qui simule l'appui sur une touche de clavier ou sur la souris.",
+            "featured_image": "https://raw.githubusercontent.com/myhumankit/pedale-clavier-souris/master/images/pedale-clavier-souris.jpg",
+            "cost": {"value": 0, "currency": "EUR"},
+            "duration": 2100,
+        },
+        "3": {
+            "full_name": "Bouton train",
+            "github_repository": "bouton-train",
+            "github_organization": "myhumankit",
+            "short_description": "Un simple bouton pour allumer un jouet pour enfant en forme de train.",
+            "featured_image": "https://raw.githubusercontent.com/myhumankit/bouton-train/master/images/bouton-train.jpg",
+            "cost": {"value": 0, "currency": "EUR"},
+            "duration": 0,
+        },
+    }
+
+    return render_template("index.html", projects=projects)
 
 
 @app.errorhandler(404)
@@ -293,14 +324,20 @@ def filling_json_file(organization, repository, file):
             # "skills": skills,
         }
 
-    return data
+    return data, 0
 
 
 @app.route("/api/v1/<string:organization>/<string:repository>/<string:file>")
 def project_details_file_json(organization, repository, file):
 
     # fill json with computed datas
-    data = filling_json_file(organization, repository, file)
+    data, error = filling_json_file(organization, repository, file)
+
+    if error:
+        return (
+            render_template("error.html", title="400 - Bad Request", error=error),
+            400,
+        )
 
     # project rendering
     return jsonify(data)
@@ -310,7 +347,13 @@ def project_details_file_json(organization, repository, file):
 def project_details(organization, repository):
 
     # fill json with computed datas
-    data = filling_json_file(organization, repository, "project")
+    data, error = filling_json_file(organization, repository, "project")
+
+    if error:
+        return (
+            render_template("error.html", title="400 - Bad Request", error=error),
+            400,
+        )
 
     # transform markdown to html
     if "steps" in data["project"]:
