@@ -387,9 +387,17 @@
                             "$ref": "#/definitions/paragraph",
                             "default": "Quelques mots sur le projet : le contexte, son histoire, etc. ..."
                         },
-                        "featured_image": {
-                            "title": "Featured image",
-                            "$ref": "#/definitions/image"
+                        "featured_images": {
+                            "title": "Featured images",
+                            "description": "A list of media : images, videos, etc.",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "anyOf": [
+                                    { "$ref": "#/definitions/image" },
+                                    { "$ref": "#/definitions/youtube" }
+                                ]
+                            }
                         },
                         "links": {
                             "title": "Links",
