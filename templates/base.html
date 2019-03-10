@@ -8,6 +8,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
+    <!-- Bootswatch CSS
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css">
+     -->
     <!-- Font Awesome's Free CDN -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
@@ -41,7 +44,7 @@
 
 <body>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="{{ url_for('index') }}">My Workshop</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fas fa-tools"></i> My Workshop</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -51,8 +54,23 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="container">
-        <p>&copy; My Human Kit 2019</p>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <footer class="page-footer font-small bg-secondary text-white pt-4">
+        <div class="container-fluid text-center text-md-left">
+            <div class="row">
+                <div class="col-md-6 mt-md-0 mt-3">
+                    <h5 class="text-uppercase"><i class="fas fa-tools"></i> My Workshop</h5>
+                    <p>Un générateur de documentation pour les projets open hardware.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright text-center py-3 bg-dark text-white">
+            &copy; My Human Kit 2019
+        </div>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
