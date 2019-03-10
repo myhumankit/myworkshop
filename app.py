@@ -194,6 +194,10 @@ def filling_json_file(organization, repository, file):
                                 "component"
                             ] = copy.deepcopy(component["component"])
 
+                            data["project"]["steps"][step_index]["inputs"][input_index][
+                                "component"
+                            ]["id"] = id
+
                             if id in components:
                                 # le composant est déjà dans la liste
                                 components[id]["quantity"] = (
@@ -251,6 +255,10 @@ def filling_json_file(organization, repository, file):
                             data["project"]["steps"][step_index]["inputs"][input_index][
                                 "tool"
                             ] = copy.deepcopy(tool["tool"])
+
+                            data["project"]["steps"][step_index]["inputs"][input_index][
+                                "tool"
+                            ]["id"] = id
 
                             if id not in tools:
                                 # l'outil n'est pas encore dans la liste

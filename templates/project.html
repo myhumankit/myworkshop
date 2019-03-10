@@ -331,7 +331,14 @@
                     <ul class="list-group">
                         {% if input.component %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-dolly"></i> {{ input.component.full_name }}</span>
+                            <span>
+                                <i class="fas fa-dolly"></i>
+                                {{ input.component.full_name }}
+                                <!-- Button trigger modal -->
+                                <a href="#" data-toggle="modal" data-target="#modal-{{ input.component.id }}" class="text-secondary">
+                                    <i class="fas fa-question-circle"></i>
+                                </a>
+                            </span>
                             <span class="badge badge-primary badge-pill">
                                 {{ input.component.quantity|string if input.component.quantity }}
                                 {{ input.component.unit|string if input.component.unit != "1" }}
@@ -346,7 +353,14 @@
                     <ul class="list-group">
                         {% if input.tool %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-tools"></i> {{ input.tool.full_name }}</span>
+                            <span>
+                                <i class="fas fa-tools"></i>
+                                {{ input.tool.full_name }}
+                                <!-- Button trigger modal -->
+                                <a href="#" data-toggle="modal" data-target="#modal-{{ input.tool.id }}" class="text-secondary">
+                                    <i class="fas fa-question-circle"></i>
+                                </a>
+                            </span>
                         </li>
                         {% endif %}
                     </ul>
