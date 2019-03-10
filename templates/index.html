@@ -3,7 +3,7 @@
 {% block content %}
 <div class="jumbotron">
     <div class="container">
-        <h1 class="display-3">My Workshop</h1>
+        <h1 class="display-3"><i class="fas fa-tools"></i> My Workshop</h1>
         <p>Un générateur de documentation pour les projets open hardware.</p>
     </div>
 </div>
@@ -11,8 +11,6 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-2">
-        </div>
         <div class="col-md-8">
             <h2 class="text-center">À propos</h2>
             <br/>
@@ -22,7 +20,35 @@
             <p>Pour faciliter l'écriture de la documentation, un <a href="{{ url_for("project_details_new") }}">éditeur en ligne est disponible</a>. Celui-ci vous permet d'exporter je fichier <strong>project.json</strong> respectant le <a href="https://raw.githubusercontent.com/myhumankit/myworkshop/master/project.json">JSON Schema My Workshop</a>.</p>
             <br/>
         </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <img src="https://raw.githubusercontent.com/myhumankit/myworkshop-demo-project/master/images/rocket.jpg" class="card-img-top" alt="Fusée intergalactique">
+                <div class="card-body">
+                    <h5 class="card-title">Fusée intergalactique</h5>
+                    <p class="card-text">Un vaisseau spatial pour partir à la conquête du monde !</p>
+                    <a href="{{ url_for('project_details', organization='myhumankit', repository='myworkshop-demo-project') }}" class="btn btn-primary"><i class="fas fa-angle-right"></i> Consulter</a>
+                </div>
+                <div class="card-footer text-muted">
+                    <span class="badge badge-secondary">
+                        Licence
+                        <i class="fab fa-creative-commons"></i>
+                        <i class="fab fa-creative-commons-by"></i>
+                    </span>
+                    <span class="badge badge-danger">
+                        <i class="far fa-clock"></i>
+                        {{ format_duration(3600) }}
+                    </span>
+                    <span class="badge badge-primary">
+                        <i class="fas fa-money-bill-alt"></i>
+                        892500.0
+                        EUR
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
+    <br/>
+    <br/>
 
     <div class="row">
         <div class="col-md-12">
