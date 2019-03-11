@@ -464,6 +464,23 @@
                                 }
                             }
                         },
+                        "mass": {
+                            "title": "Mass",
+                            "required": ["value", "unit"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "value": {
+                                    "title": "Value",
+                                    "type": "number"
+                                },
+                                "unit": {
+                                    "title": "Unit",
+                                    "type": "string",
+                                    "enum": ["kg", "g", "t"],
+                                    "default": "kg"
+                                }
+                            }
+                        },
                         "featured_image": {
                             "title": "Featured image",
                             "$ref": "#/definitions/image"
