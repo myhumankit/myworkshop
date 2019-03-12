@@ -24,7 +24,7 @@
                 </span>
                 <span class="badge badge-primary">
                     <i class="fas fa-money-bill-alt"></i>
-                    {{ project.computed.cost.value }}
+                    {{ "%.2f"|format(project.computed.cost.value) }}
                     {{ project.computed.cost.currency }}
                 </span>
             </div>
@@ -258,7 +258,7 @@
                         </td>
                         <td>
                             {% if project.computed.components[id].cost %}
-                                {{ (project.computed.components[id].cost.value * project.computed.components[id].quantity) }}
+                                {{ "%.2f"|format(project.computed.components[id].cost.value * project.computed.components[id].quantity) }}
                                 {{ project.computed.components[id].cost.currency }}
                             {% else %}
                                 ?
