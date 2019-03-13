@@ -390,6 +390,17 @@
                                 ]
                             }
                         },
+                        "status": {
+                            "title": "Status",
+                            "description": "State of progress of this project documentation.",
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "published",
+                                "canceled"
+                            ],
+                            "default": "draft"
+                        },
                         "links": {
                             "title": "Links",
                             "type": "array",

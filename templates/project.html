@@ -27,6 +27,29 @@
                     {{ "%.2f"|format(project.computed.cost.value) }}
                     {{ project.computed.cost.currency }}
                 </span>
+                {% if project.status %}
+                    {% if project.status == "published" %}
+                    <span class="badge badge-success">
+                        <i class="fas fa-pen-nib"></i>
+                        publié
+                    </span>
+                    {% elif project.status == "canceled" %}
+                    <span class="badge badge-danger">
+                        <i class="fas fa-pen-nib"></i>
+                        annulé
+                    </span>
+                    {% else %}
+                    <span class="badge badge-warning">
+                        <i class="fas fa-pen-nib"></i>
+                        brouillon
+                    </span>
+                    {% endif %}
+                {% else %}
+                <span class="badge badge-warning">
+                    <i class="fas fa-pen-nib"></i>
+                    brouillon
+                </span>
+                {% endif %}
             </div>
             <div class="col-md-4">
                 <p class="text-right">
@@ -79,8 +102,25 @@
         <div class="col-md-2">
         </div>
         <div class="col-md-8">
+            {% if project.status %}
+                {% if project.status == "published" %}
+                {% elif project.status == "canceled" %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>Attention</strong> : Cette documentation est annulée.
+                </div>
+                {% else %}
+                <div class="alert alert-warning" role="alert">
+                    <strong>Attention</strong> : Cette documentation est en cours de rédaction.
+                </div>
+                {% endif %}
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+                <strong>Attention</strong> : Cette documentation est en cours de rédaction.
+            </div>
+            {% endif %}
+
             <div class="alert alert-danger" role="alert">
-                <strong>Attention</strong> : Cette documentation est fournie à titre informatif. En aucun cas l'auteur de cette documentation ne peux être tenu responsable d'un éventuel problème.
+                <strong>Attention</strong> : Toute la documentation est fournie « en l'état », sans aucune garantie, expresse ou implicite. En aucun cas, les auteurs ne pourront être tenus responsables des dommages résultant de l'utilisation de cette documentation. <a href="http://wikilab.myhumankit.org/index.php?title=Limite_responsabilit%C3%A9">Plus d'info sur le Wikilab</a>.
             </div>
 
             <h2 class="text-center">À propos</h2>
