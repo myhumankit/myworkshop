@@ -1,11 +1,5 @@
 {% extends "base.html" %}
 {% block title %}{{ project.full_name }}{% endblock %}
-{% block head %}
-<!-- highlight.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/cpp.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-{% endblock %}
 {% block content %}
 <div class="jumbotron">
     <div class="container">
@@ -231,6 +225,9 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <p class="text-right">
+                <a class="btn btn-light btn-sm" href="{{ request.path }}/details" role="button"><i class="fas fa-tools"></i> Liste détaillée</a>
+            </p>
             <br/>
             <br/>
             {% endif %}
@@ -308,6 +305,9 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <p class="text-right">
+                <a class="btn btn-light btn-sm" href="{{ request.path }}/details" role="button"><i class="fas fa-dolly"></i> Liste détaillée</a>
+            </p>
             {% endif %}
         </div>
     </div>

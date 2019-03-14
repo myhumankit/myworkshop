@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}{{ project.full_name }}{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4">{{ project.full_name }}</h1>
+                <p class="lead">{{ project.short_description }}</p>
+                <span class="badge badge-secondary">
+                    Licence
+                    <i class="fab fa-creative-commons"></i>
+                    <i class="fab fa-creative-commons-by"></i>
+                </span>
+                <span class="badge badge-danger">
+                    <i class="far fa-clock"></i>
+                    {{ format_duration(project.computed.duration) }}
+                </span>
+                <span class="badge badge-primary">
+                    <i class="fas fa-money-bill-alt"></i>
+                    {{ "%.2f"|format(project.computed.cost.value) }}
+                    {{ project.computed.cost.currency }}
+                </span>
+                {% if project.status %}
+                    {% if project.status == "published" %}
+                    <span class="badge badge-success">
+                        <i class="fas fa-pen-nib"></i>
+                        publié
+                    </span>
+                    {% elif project.status == "canceled" %}
+                    <span class="badge badge-danger">
+                        <i class="fas fa-pen-nib"></i>
+                        annulé
+                    </span>
+                    {% else %}
+                    <span class="badge badge-warning">
+                        <i class="fas fa-pen-nib"></i>
+                        brouillon
+                    </span>
+                    {% endif %}
+                {% else %}
+                <span class="badge badge-warning">
+                    <i class="fas fa-pen-nib"></i>
+                    brouillon
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="row">
+
+        {% if project.computed.tools|length > 0 %}
+            <div class="col-md-12">
+                <br/>
+                <h2 class="text-center"><i class="fas fa-tools"></i> Outils</h2>
+                <br/>
+            </div>
+            {% for id in project.computed.tools %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <h5 class="card-header">{{ project.computed.tools[id].full_name }}</h5>
+                    {% if project.computed.tools[id].featured_image %}
+                    <img src="{{ project.computed.tools[id].featured_image.image.url }}" class="card-img-top" alt="{{ project.computed.tools[id].featured_image.image.caption }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text">{{ project.computed.tools[id].short_description }}</p>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Source :</h5>
+                        <code><pre>{
+    "slug": "{{ project.computed.tools[id].slug }}",
+    "quantity": 1,
+    "github_organization": "{{ project.computed.tools[id].github_organization }}",
+    "github_repository": "{{ project.computed.tools[id].github_repository }}"
+}</pre></code>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if project.computed.components|length > 0 %}
+            <div class="col-md-12">
+                <br/>
+                <h2 class="text-center"><i class="fas fa-dolly"></i> Composants</h2>
+                <br/>
+            </div>
+            {% for id in project.computed.components %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <h5 class="card-header">{{ project.computed.components[id].full_name }}</h5>
+                    {% if project.computed.components[id].featured_image %}
+                    <img src="{{ project.computed.components[id].featured_image.image.url }}" class="card-img-top" alt="{{ project.computed.components[id].featured_image.image.caption }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text">{{ project.computed.components[id].short_description }}</p>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Source :</h5>
+                        <code><pre>{
+    "slug": "{{ project.computed.components[id].slug }}",
+    "quantity": 1,
+    "github_organization": "{{ project.computed.components[id].github_organization }}",
+    "github_repository": "{{ project.computed.components[id].github_repository }}"
+}</pre></code>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <span class="badge badge-primary">
+                            <i class="fas fa-money-bill-alt"></i>
+                            {{ project.computed.components[id].cost.value }}
+                            {{ project.computed.components[id].cost.currency }}
+                        </span>
+                        {% if project.computed.components[id].mass %}
+                        <span class="badge badge-success">
+                            <i class="fas fa-weight"></i>
+                            {{ project.computed.components[id].mass.value }}
+                            {{ project.computed.components[id].mass.unit }}
+                        </span>
+                        {% endif %}
+                        <span class="badge badge-secondary">
+                            <i class="far fa-question-circle"></i>
+                            {{ project.computed.components[id].quantity }}
+                            {% if project.computed.components[id].unit != "1" %}
+                            {{ project.computed.components[id].unit }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+
+</div> <!-- /container -->
+{% endblock %}

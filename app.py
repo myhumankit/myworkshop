@@ -403,3 +403,25 @@ def project_details_new():
         project='{"project":{}}',
         json_schema=json.dumps(json_schema),
     )
+
+
+@app.route("/<string:organization>/<string:repository>/details")
+def components_portfolio(organization, repository):
+
+    # fill json with computed datas
+    data, error = filling_json_file(organization, repository, "project")
+
+    if error:
+        return (
+            render_template("error.html", title="400 - Bad Request", error=error),
+            400,
+        )
+
+    # transform markdown to html
+    if "steps" in data["project"]:
+        for step in data["project"]["steps"]:
+            if "content" in step:
+                step["content"] = markdown2.markdown(step["content"])
+
+    # project rendering
+    return render_template("project_detail.html", project=data["project"])
