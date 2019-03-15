@@ -8,8 +8,11 @@ import hashlib
 import copy
 import markdown2
 import humanize
+from flask_caching import Cache
 
 app = Flask(__name__)
+cache = Cache(app, config={"CACHE_TYPE": "simple"})
+cache_timeout = 600  # 600 seconds = 10 minutes
 
 
 @app.context_processor
@@ -37,6 +40,7 @@ def absolute_url(document, base_url):
                 absolute_url(document[k], base_url)
 
 
+@cache.memoize(timeout=cache_timeout)
 def load_github_file(
     organization, repository, file_name, force_validate=True, to_absolute_url=True
 ):
@@ -93,6 +97,7 @@ def component_complete(component, components_library):
 
 
 @app.route("/")
+@cache.cached(timeout=cache_timeout)
 def index():
     projects = {
         "1": {
@@ -129,6 +134,7 @@ def index():
 
 
 @app.errorhandler(404)
+@cache.cached(timeout=cache_timeout)
 def page_not_found(e):
     return (
         render_template(
@@ -328,6 +334,7 @@ def filling_json_file(organization, repository, file):
 
 
 @app.route("/api/v1/<string:organization>/<string:repository>/<string:file>")
+@cache.cached(timeout=cache_timeout)
 def project_details_file_json(organization, repository, file):
 
     # fill json with computed datas
@@ -344,6 +351,7 @@ def project_details_file_json(organization, repository, file):
 
 
 @app.route("/<string:organization>/<string:repository>")
+@cache.cached(timeout=cache_timeout)
 def project_details(organization, repository):
 
     # fill json with computed datas
@@ -369,6 +377,7 @@ def project_details(organization, repository):
 
 
 @app.route("/<string:organization>/<string:repository>/<string:file>/edit")
+@cache.cached(timeout=cache_timeout)
 def project_details_edit(organization, repository, file):
 
     # load project datas
@@ -394,6 +403,7 @@ def project_details_edit(organization, repository, file):
 
 
 @app.route("/new")
+@cache.cached(timeout=cache_timeout)
 def project_details_new():
 
     # load project's json schema
@@ -409,6 +419,7 @@ def project_details_new():
 
 
 @app.route("/<string:organization>/<string:repository>/details")
+@cache.cached(timeout=cache_timeout)
 def components_portfolio(organization, repository):
 
     # fill json with computed datas
