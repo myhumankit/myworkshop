@@ -356,6 +356,9 @@ def project_details(organization, repository):
         )
 
     # transform markdown to html
+    if "about" in data["project"]:
+        data["project"]["about"] = markdown2.markdown(data["project"]["about"])
+
     if "steps" in data["project"]:
         for step in data["project"]["steps"]:
             if "content" in step:
