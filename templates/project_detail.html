@@ -111,15 +111,17 @@
 }</pre></code>
                     </div>
                     <div class="card-footer text-muted">
+                        {% if project.computed.components[id].cost %}
                         <span class="badge badge-primary">
                             <i class="fas fa-money-bill-alt"></i>
-                            {{ project.computed.components[id].cost.value }}
+                            {{ "%.2f"|format(project.computed.components[id].cost.value * project.computed.components[id].quantity) }}
                             {{ project.computed.components[id].cost.currency }}
                         </span>
+                        {% endif %}
                         {% if project.computed.components[id].mass %}
                         <span class="badge badge-success">
                             <i class="fas fa-weight"></i>
-                            {{ project.computed.components[id].mass.value }}
+                            {{ "%.3f"|format(project.computed.components[id].mass.value * project.computed.components[id].quantity) }}
                             {{ project.computed.components[id].mass.unit }}
                         </span>
                         {% endif %}
