@@ -596,6 +596,178 @@
                 }
             }
         },
+        "nominal_diameter": {
+            "title": "Nominal diameter",
+            "type": "number",
+            "enum": [1.6, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10, 12, 16, 20, 24, 30, 36],
+            "default": 4
+        },
+        "screw": {
+            "title": "Screw",
+            "type": "object",
+            "required": ["screw"],
+            "additionalProperties": false,
+            "properties": {
+                "screw": {
+                    "title": "Profile",
+                    "required": ["quantity", "material", "diameter", "head", "head_option", "driving", "threading", "length"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "material": {
+                            "title": "Material",
+                            "type": "string",
+                            "enum": ["steel", "stainless steel", "black stainless steel", "bronze", "nylon", "brass", "aluminum"],
+                            "default": "steel"
+                        },
+                        "head": {
+                            "title": "Head type",
+                            "description": "Forme de la tête - A: sans tête ; C: cylindrique ; F: fraisée ; G: goutte de suif ; H: hexagonale ; J: Japy ; Q: carré ; R: ronde ; RL: poêlier",
+                            "type": "string",
+                            "enum": ["A", "C", "F", "G", "H", "J", "Q", "R", "RL"],
+                            "default": "H"
+                        },
+                        "head_option": {
+                            "title": "Head type option",
+                            "description": "Forme complémenaire - false: aucune ; B: bombée ; BL: bombée large ; D: à embase ; F: à embase centrée ; K: à créneaux ; T: à collerette",
+                            "type": "string",
+                            "enum": [false, "B", "BL", "D", "F", "K", "T"],
+                            "default": false
+                        },
+                        "driving": {
+                            "title": "Driving",
+                            "description": "Entraînement - false: hexagonale ; HC: à six pans creux ; CC: à collet carré ; EG: à ergot ; S: fendue ; H: cruciforme « Phillips » ; Z: cruciforme « Pozidriv » ; X: à six lobes internes « Torx » ; DB: « Dombo be »",
+                            "type": "string",
+                            "enum": [false, "HC", "CC", "EG", "S", "H", "Z", "X", "DB"],
+                            "default": false
+                        },
+                        "threading": {
+                            "title": "Threading",
+                            "description": "Filetage - M: métrique ; MF: métrique pas fin ; ST: à tôle ; VB: à bois ; Tr: trapézoïdal ; Rd: rond",
+                            "type": "string",
+                            "enum": ["M", "MF", "ST", "VB", "Tr", "Rd"],
+                            "default": "M"
+                        },
+                        "diameter": { "$ref": "#/definitions/nominal_diameter" },
+                        "length": {
+                            "title": "Length",
+                            "type": "number",
+                            "enum": [2.5, 3, 4, 5, 6, 8, 10, 12, 16, 20, 25, 30 ,35, 40, 45, 50, 55, 60, 65, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 180, 200],
+                            "default": 10
+                        },
+                        "threaded_length": {
+                            "title": "Threaded length",
+                            "type": "number",
+                            "enum": [2.5, 3, 4, 5, 6, 8, 10, 12, 16, 20, 25, 30 ,35, 40, 45, 50, 55, 60, 65, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 180, 200],
+                            "default": 10
+                        },
+                        "extremity": {
+                            "title": "Extremity",
+                            "description": "extrémité - CH: à bout chanfreiné ; RL: brut de roulage ; PN: à bout pilote conique ; LD: à bout pilote cylindrique ; BB: à bout bombé ; TC: à téton court ; TL: à téton long ; PL: à bout plat ; CV: à bout cuvette",
+                            "type": "string",
+                            "enum": ["CH", "RL", "PN", "LD", "BB", "TC", "TL", "PL", "CV"]
+                        },
+                        "quality": {
+                            "title": "Quality",
+                            "type": "string",
+                            "enum": ["3.6", "4.6", "4.8", "5.6", "5.8", "6.6", "6.8", "6.9", "8.8", "10.9", "12.9", "14.9"],
+                            "default": "8.8"
+                        }
+                    }
+                }
+            }
+        },
+        "nut": {
+            "title": "Nut",
+            "type": "object",
+            "required": ["nut"],
+            "additionalProperties": false,
+            "properties": {
+                "nut": {
+                    "title": "Nut",
+                    "required": ["quantity", "material", "threading", "diameter", "type"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "material": {
+                            "title": "Material",
+                            "type": "string",
+                            "enum": ["steel", "stainless steel", "black stainless steel", "bronze", "nylon", "brass", "aluminum"],
+                            "default": "steel"
+                        },
+                        "threading": {
+                            "title": "Threading",
+                            "description": "Filetage - M: métrique ; MF: métrique pas fin",
+                            "type": "string",
+                            "enum": ["M", "MF"],
+                            "default": "M"
+                        },
+                        "diameter": { "$ref": "#/definitions/nominal_diameter" },
+                        "type": {
+                            "title": "Nut type",
+                            "type": "string",
+                            "enum": [
+                                "Hex",
+                                "Jam",
+                                "Nylon",
+                                "Flange",
+                                "Square",
+                                "Wing"
+                            ],
+                            "default": "Hex"
+                        }
+                    }
+                }
+            }
+        },
+        "washer": {
+            "title": "Washer",
+            "type": "object",
+            "required": ["washer"],
+            "additionalProperties": false,
+            "properties": {
+                "washer": {
+                    "title": "Washer",
+                    "required": ["quantity", "material", "diameter", "type"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "material": {
+                            "title": "Material",
+                            "type": "string",
+                            "enum": ["steel", "stainless steel", "black stainless steel", "bronze", "nylon", "brass", "aluminum"],
+                            "default": "steel"
+                        },
+                        "diameter": { "$ref": "#/definitions/nominal_diameter" },
+                        "type": {
+                            "title": "Washer type",
+                            "type": "string",
+                            "enum": [
+                                "Flat S",
+                                "Flat N",
+                                "Flat L"
+                            ],
+                            "default": "Flat N"
+                        }
+                    }
+                }
+            }
+        },
         "local_component": {
             "title": "Local component",
             "type": "object",
@@ -728,7 +900,10 @@
                             { "$ref": "#/definitions/file" },
                             { "$ref": "#/definitions/profile" },
                             { "$ref": "#/definitions/sheet" },
-                            { "$ref": "#/definitions/cleat" }
+                            { "$ref": "#/definitions/cleat" },
+                            { "$ref": "#/definitions/screw" },
+                            { "$ref": "#/definitions/nut" },
+                            { "$ref": "#/definitions/washer" }
                         ]
                     }
                 },
