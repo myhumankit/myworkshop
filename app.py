@@ -9,6 +9,11 @@ import copy
 import markdown2
 import humanize
 from flask_caching import Cache
+from material.material_app import (
+    profile_to_component,
+    sheet_to_component,
+    cleat_to_component,
+)
 
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
@@ -300,6 +305,60 @@ def filling_json_file(organization, repository, file):
                             if id not in tools:
                                 # l'outil n'est pas encore dans la liste
                                 tools[id] = copy.deepcopy(tool["tool"])
+
+                        if "profile" in input:
+                            component, component_item, id = profile_to_component(
+                                input["profile"]
+                            )
+
+                            step["inputs"][input_index] = component
+
+                            if id in components:
+                                # le composant est déjà dans la liste
+                                components[id]["quantity"] = (
+                                    components[id]["quantity"]
+                                    + component_item["component"]["quantity"]
+                                )
+                            else:
+                                components[id] = copy.deepcopy(
+                                    component_item["component"]
+                                )
+
+                        if "sheet" in input:
+                            component, component_item, id = sheet_to_component(
+                                input["sheet"]
+                            )
+
+                            step["inputs"][input_index] = component
+
+                            if id in components:
+                                # le composant est déjà dans la liste
+                                components[id]["quantity"] = (
+                                    components[id]["quantity"]
+                                    + component_item["component"]["quantity"]
+                                )
+                            else:
+                                components[id] = copy.deepcopy(
+                                    component_item["component"]
+                                )
+
+                        if "cleat" in input:
+                            component, component_item, id = cleat_to_component(
+                                input["cleat"]
+                            )
+
+                            step["inputs"][input_index] = component
+
+                            if id in components:
+                                # le composant est déjà dans la liste
+                                components[id]["quantity"] = (
+                                    components[id]["quantity"]
+                                    + component_item["component"]["quantity"]
+                                )
+                            else:
+                                components[id] = copy.deepcopy(
+                                    component_item["component"]
+                                )
 
                         input_index += 1
 

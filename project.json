@@ -9,6 +9,11 @@
             "description": "Relative or absolute URL.",
             "type": "string"
         },
+        "color": {
+            "title": "Color",
+            "type": "string",
+            "format": "color"
+        },
         "slug": {
             "title": "Slug",
             "description": "The file name of the JSON (without extension).",
@@ -176,81 +181,498 @@
                 }
             }
         },
-        "component": {
-            "title": "Component",
+        "metal": {
+            "title": "Metal",
+            "type": "string",
+            "enum": [
+                "steel",
+                "stainless steel",
+                "aluminum",
+                "copper"
+            ]
+        },
+        "wood": {
+            "title": "Wood",
+            "type": "string",
+            "enum": [
+                "fir",
+                "pine",
+                "cedar",
+                "poplar",
+                "oak",
+                "redwood"
+            ]
+        },
+        "engineered_wood": {
+            "title": "Engineered wood",
+            "type": "string",
+            "enum": [
+                "fir plywood",
+                "pine plywood",
+                "cedar plywood",
+                "poplar plywood",
+                "oak plywood",
+                "redwood plywood",
+                "MDF",
+                "HDF",
+                "OSB",
+                "OSB 1",
+                "OSB 2",
+                "OSB 3",
+                "OSB 4"
+            ]
+        },
+        "plastic": {
+            "title": "Plastic",
+            "type": "string",
+            "enum": [
+                "PMMA",
+                "PMMA opaque",
+                "PMMA translucent",
+                "PMMA transparent",
+                "PMMA fluorescent",
+                "PVC",
+                "PE"
+            ]
+        },
+        "composite": {
+            "title": "Composite",
+            "type": "string",
+            "enum": [
+                "Dibond"
+            ]
+        },
+        "generic_material": {
+            "title": "Generic material",
+            "type": "string",
+            "enum": [
+                "glass",
+                "foam",
+                "cardboard"
+            ]
+        },
+        "sheet": {
+            "title": "Sheet",
+            "type": "object",
+            "required": ["sheet"],
+            "additionalProperties": false,
+            "properties": {
+                "sheet": {
+                    "title": "Sheet",
+                    "required": ["quantity", "material", "thickness", "length", "width"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "material": {
+                            "title": "Material",
+                            "anyOf": [
+                                { "$ref": "#/definitions/metal" },
+                                { "$ref": "#/definitions/wood" },
+                                { "$ref": "#/definitions/engineered_wood" },
+                                { "$ref": "#/definitions/plastic" },
+                                { "$ref": "#/definitions/composite" },
+                                { "$ref": "#/definitions/generic_material" }
+                            ]
+                        },
+                        "thickness": {
+                            "title": "Thickness in mm",
+                            "type": "number"
+                        },
+                        "length": {
+                            "title": "Length in mm",
+                            "type": "number"
+                        },
+                        "width": {
+                            "title": "Width in mm",
+                            "type": "number"
+                        },
+                        "color": { "$ref": "#/definitions/color" }
+                    }
+                }
+            }
+        },
+        "cleat": {
+            "title": "Cleat",
+            "type": "object",
+            "required": ["cleat"],
+            "additionalProperties": false,
+            "properties": {
+                "cleat": {
+                    "title": "Cleat",
+                    "required": ["quantity", "material", "section", "length"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "material": {
+                            "title": "Material",
+                            "$ref": "#/definitions/wood"
+                        },
+                        "length": {
+                            "title": "Length in mm",
+                            "type": "number"
+                        },
+                        "section": {
+                            "title": "Section",
+                            "description": "Geometrical section of the profile.",
+                            "type": "object",
+                            "oneOf": [
+                                {
+                                    "title": "Round",
+                                    "required": ["type", "diameter"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["round"],
+                                            "default": "round"
+                                        },
+                                        "diameter": {
+                                            "title": "Diameter in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Square bar",
+                                    "required": ["type", "width"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["square_bar"],
+                                            "default": "square_bar"
+                                        },
+                                        "width": {
+                                            "title": "Width in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Rectangular bar",
+                                    "required": ["type", "long_width", "short_width"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["rectangular_bar"],
+                                            "default": "rectangular_bar"
+                                        },
+                                        "long_width": {
+                                            "title": "Long width in mm",
+                                            "type": "number"
+                                        },
+                                        "short_width": {
+                                            "title": "Short width in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "color": { "$ref": "#/definitions/color" }
+                    }
+                }
+            }
+        },
+        "profile": {
+            "title": "Profile",
+            "type": "object",
+            "required": ["profile"],
+            "additionalProperties": false,
+            "properties": {
+                "profile": {
+                    "title": "Profile",
+                    "required": ["quantity", "material", "section", "length"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "material": {
+                            "title": "Material",
+                            "anyOf": [
+                                { "$ref": "#/definitions/metal" },
+                                { "$ref": "#/definitions/plastic" }
+                            ]
+                        },
+                        "length": {
+                            "title": "Length in mm",
+                            "type": "number"
+                        },
+                        "section": {
+                            "title": "Section",
+                            "description": "Geometrical section of the profile.",
+                            "type": "object",
+                            "oneOf": [
+                                {
+                                    "title": "Round",
+                                    "required": ["type", "diameter"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["round"],
+                                            "default": "round"
+                                        },
+                                        "diameter": {
+                                            "title": "Diameter in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Pipe",
+                                    "required": ["type", "diameter", "thickness"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["pipe"],
+                                            "default": "pipe"
+                                        },
+                                        "diameter": {
+                                            "title": "Diameter in mm",
+                                            "type": "number"
+                                        },
+                                        "thickness": {
+                                            "title": "Thickness in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Square bar",
+                                    "required": ["type", "width"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["square_bar"],
+                                            "default": "square_bar"
+                                        },
+                                        "width": {
+                                            "title": "Width in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Square tube",
+                                    "required": ["type", "width", "thickness"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["square_tube"],
+                                            "default": "square_tube"
+                                        },
+                                        "width": {
+                                            "title": "Width in mm",
+                                            "type": "number"
+                                        },
+                                        "thickness": {
+                                            "title": "Thickness in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Rectangular bar",
+                                    "required": ["type", "long_width", "short_width"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["rectangular_bar"],
+                                            "default": "rectangular_bar"
+                                        },
+                                        "long_width": {
+                                            "title": "Long width in mm",
+                                            "type": "number"
+                                        },
+                                        "short_width": {
+                                            "title": "Short width in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Rectangular tube",
+                                    "required": ["type", "long_width", "short_width", "thickness"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["rectangular_tube"],
+                                            "default": "rectangular_tube"
+                                        },
+                                        "long_width": {
+                                            "title": "Long width in mm",
+                                            "type": "number"
+                                        },
+                                        "short_width": {
+                                            "title": "Short width in mm",
+                                            "type": "number"
+                                        },
+                                        "thickness": {
+                                            "title": "Thickness in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Equal leg angle",
+                                    "required": ["type", "leg_length", "thickness"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["equal_leg_angle"],
+                                            "default": "equal_leg_angle"
+                                        },
+                                        "leg_length": {
+                                            "title": "Leg length in mm",
+                                            "type": "number"
+                                        },
+                                        "thickness": {
+                                            "title": "Thickness in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                {
+                                    "title": "Unequal leg angle",
+                                    "required": ["type", "long_leg_length", "short_leg_length", "thickness"],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "type": {
+                                            "title": "Type",
+                                            "type": "string",
+                                            "enum": ["unequal_leg_angle"],
+                                            "default": "unequal_leg_angle"
+                                        },
+                                        "long_leg_length": {
+                                            "title": "Long leg length in mm",
+                                            "type": "number"
+                                        },
+                                        "short_leg_length": {
+                                            "title": "Short leg length in mm",
+                                            "type": "number"
+                                        },
+                                        "thickness": {
+                                            "title": "Thickness in mm",
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "color": { "$ref": "#/definitions/color" }
+                    }
+                }
+            }
+        },
+        "local_component": {
+            "title": "Local component",
             "type": "object",
             "required": ["component"],
             "additionalProperties": false,
             "properties": {
                 "component": {
-                    "title": "Component",
-                    "description": "Component.",
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "title": "Local component",
-                            "required": ["slug", "quantity"],
-                            "additionalProperties": false,
-                            "properties": {
-                                "slug": { "$ref": "#/definitions/slug" },
-                                "quantity": {
-                                    "title": "Quantity",
-                                    "type": "number",
-                                    "default": 1,
-                                    "minimum": 0
-                                }
-                            }
-                        },
-                        {
-                            "title": "External component",
-                            "required": ["slug", "quantity", "github_organization", "github_repository"],
-                            "additionalProperties": false,
-                            "properties": {
-                                "slug": { "$ref": "#/definitions/slug" },
-                                "quantity": {
-                                    "title": "Quantity",
-                                    "type": "number",
-                                    "default": 1,
-                                    "minimum": 0
-                                },
-                                "github_organization": { "$ref": "#/definitions/github_organization" },
-                                "github_repository": { "$ref": "#/definitions/github_repository" }
-                            }
+                    "title": "Local component",
+                    "required": ["slug", "quantity"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "slug": { "$ref": "#/definitions/slug" },
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
                         }
-                    ]
+                    }
                 }
             }
         },
-        "tool": {
-            "title": "Tool",
+        "external_component": {
+            "title": "External component",
+            "type": "object",
+            "required": ["component"],
+            "additionalProperties": false,
+            "properties": {
+                "component": {
+                    "title": "External component",
+                    "required": ["slug", "quantity", "github_organization", "github_repository"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "slug": { "$ref": "#/definitions/slug" },
+                        "quantity": {
+                            "title": "Quantity",
+                            "type": "number",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "github_organization": { "$ref": "#/definitions/github_organization" },
+                        "github_repository": { "$ref": "#/definitions/github_repository" }
+                    }
+                }
+            }
+        },
+        "local_tool": {
+            "title": "Local tool",
             "type": "object",
             "required": ["tool"],
             "additionalProperties": false,
             "properties": {
                 "tool": {
-                    "title": "Tool",
-                    "description": "Tool.",
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "title": "Local tool",
-                            "required": ["slug"],
-                            "additionalProperties": false,
-                            "properties": {
-                                "slug": { "$ref": "#/definitions/slug" }
-                            }
-                        },
-                        {
-                            "title": "External tool",
-                            "required": ["slug", "github_organization", "github_repository"],
-                            "additionalProperties": false,
-                            "properties": {
-                                "slug": { "$ref": "#/definitions/slug" },
-                                "github_organization": { "$ref": "#/definitions/github_organization" },
-                                "github_repository": { "$ref": "#/definitions/github_repository" }
-                            }
-                        }
-                    ]
+                    "title": "Local tool",
+                    "required": ["slug"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "slug": { "$ref": "#/definitions/slug" }
+                    }
+                }
+            }
+        },
+        "external_tool": {
+            "title": "External tool",
+            "type": "object",
+            "required": ["tool"],
+            "additionalProperties": false,
+            "properties": {
+                "tool": {
+                    "title": "External tool",
+                    "required": ["slug", "github_organization", "github_repository"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "slug": { "$ref": "#/definitions/slug" },
+                        "github_organization": { "$ref": "#/definitions/github_organization" },
+                        "github_repository": { "$ref": "#/definitions/github_repository" }
+                    }
                 }
             }
         },
@@ -299,9 +721,14 @@
                     "minItems": 1,
                     "items": {
                         "anyOf": [
-                            { "$ref": "#/definitions/component" },
-                            { "$ref": "#/definitions/tool" },
-                            { "$ref": "#/definitions/file" }
+                            { "$ref": "#/definitions/local_component" },
+                            { "$ref": "#/definitions/external_component" },
+                            { "$ref": "#/definitions/local_tool" },
+                            { "$ref": "#/definitions/external_tool" },
+                            { "$ref": "#/definitions/file" },
+                            { "$ref": "#/definitions/profile" },
+                            { "$ref": "#/definitions/sheet" },
+                            { "$ref": "#/definitions/cleat" }
                         ]
                     }
                 },
