@@ -12,7 +12,7 @@ from flask_caching import Cache
 
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
-cache_timeout = 600  # 600 seconds = 10 minutes
+cache_timeout = 60  # 60 seconds = 1 minute
 
 
 @app.context_processor
