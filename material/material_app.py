@@ -329,3 +329,144 @@ def sheet_to_component(sheet):
     }
 
     return component, component_item, id
+
+
+def screw_to_component(screw):
+    full_name = "Vis {}{}{}".format(
+        screw["head"], screw["head_option"], screw["driving"]
+    )
+
+    if "extremity" in screw:
+        full_name = "{} {}".format(full_name, screw["extremity"])
+
+    full_name = "{}, {}{}-{}".format(
+        full_name, screw["threading"], screw["diameter"], screw["length"]
+    )
+
+    if "threaded_length" in screw:
+        full_name = "{}-{}".format(full_name, screw["threaded_length"])
+
+    if "quality" in screw:
+        full_name = "{}, {}".format(full_name, screw["quality"])
+    else:
+        full_name = "{}, {}".format(full_name, screw["material"])
+
+    short_description = full_name
+
+    id = hashlib.md5(full_name.encode("UTF-8")).hexdigest()
+
+    mass = 0
+
+    cost = 0
+
+    component = {
+        "component": {
+            "full_name": full_name,
+            "short_description": short_description,
+            "quantity": screw["quantity"],
+            "unit": "1",
+            "cost": {"currency": "EUR", "value": cost},
+            "id": id,
+            "mass": {"unit": "kg", "value": mass},
+        }
+    }
+
+    component_item = {
+        "component": {
+            "full_name": full_name,
+            "short_description": short_description,
+            "quantity": screw["quantity"],
+            "unit": "1",
+            "cost": {"currency": "EUR", "value": cost},
+            "mass": {"unit": "kg", "value": mass},
+            "github_organization": "",
+            "github_repository": "",
+            "slug": "",
+        }
+    }
+
+    return component, component_item, id
+
+
+def nut_to_component(nut):
+    full_name = "Écrou {} {}{}, {}".format(
+        nut["type"], nut["threading"], nut["diameter"], nut["material"]
+    )
+
+    short_description = full_name
+
+    id = hashlib.md5(full_name.encode("UTF-8")).hexdigest()
+
+    mass = 0
+
+    cost = 0
+
+    component = {
+        "component": {
+            "full_name": full_name,
+            "short_description": short_description,
+            "quantity": nut["quantity"],
+            "unit": "1",
+            "cost": {"currency": "EUR", "value": cost},
+            "id": id,
+            "mass": {"unit": "kg", "value": mass},
+        }
+    }
+
+    component_item = {
+        "component": {
+            "full_name": full_name,
+            "short_description": short_description,
+            "quantity": nut["quantity"],
+            "unit": "1",
+            "cost": {"currency": "EUR", "value": cost},
+            "mass": {"unit": "kg", "value": mass},
+            "github_organization": "",
+            "github_repository": "",
+            "slug": "",
+        }
+    }
+
+    return component, component_item, id
+
+
+def washer_to_component(washer):
+    full_name = "Rondelle {} Ø{}, {}".format(
+        washer["type"], washer["diameter"], washer["material"]
+    )
+
+    short_description = full_name
+
+    id = hashlib.md5(full_name.encode("UTF-8")).hexdigest()
+
+    mass = 0
+
+    cost = 0
+
+    component = {
+        "component": {
+            "full_name": full_name,
+            "short_description": short_description,
+            "quantity": washer["quantity"],
+            "unit": "1",
+            "cost": {"currency": "EUR", "value": cost},
+            "id": id,
+            "mass": {"unit": "kg", "value": mass},
+        }
+    }
+
+    component_item = {
+        "component": {
+            "full_name": full_name,
+            "short_description": short_description,
+            "quantity": washer["quantity"],
+            "unit": "1",
+            "cost": {"currency": "EUR", "value": cost},
+            "mass": {"unit": "kg", "value": mass},
+            "github_organization": "",
+            "github_repository": "",
+            "slug": "",
+        }
+    }
+
+    return component, component_item, id

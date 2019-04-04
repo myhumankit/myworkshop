@@ -636,15 +636,15 @@
                             "title": "Head type option",
                             "description": "Forme complémenaire - false: aucune ; B: bombée ; BL: bombée large ; D: à embase ; F: à embase centrée ; K: à créneaux ; T: à collerette",
                             "type": "string",
-                            "enum": [false, "B", "BL", "D", "F", "K", "T"],
-                            "default": false
+                            "enum": ["", "B", "BL", "D", "F", "K", "T"],
+                            "default": ""
                         },
                         "driving": {
                             "title": "Driving",
                             "description": "Entraînement - false: hexagonale ; HC: à six pans creux ; CC: à collet carré ; EG: à ergot ; S: fendue ; H: cruciforme « Phillips » ; Z: cruciforme « Pozidriv » ; X: à six lobes internes « Torx » ; DB: « Dombo be »",
                             "type": "string",
-                            "enum": [false, "HC", "CC", "EG", "S", "H", "Z", "X", "DB"],
-                            "default": false
+                            "enum": ["", "HC", "CC", "EG", "S", "H", "Z", "X", "DB"],
+                            "default": ""
                         },
                         "threading": {
                             "title": "Threading",

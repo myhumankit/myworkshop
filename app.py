@@ -13,6 +13,9 @@ from material.material_app import (
     profile_to_component,
     sheet_to_component,
     cleat_to_component,
+    screw_to_component,
+    nut_to_component,
+    washer_to_component,
 )
 
 app = Flask(__name__)
@@ -345,6 +348,60 @@ def filling_json_file(organization, repository, file):
                         if "cleat" in input:
                             component, component_item, id = cleat_to_component(
                                 input["cleat"]
+                            )
+
+                            step["inputs"][input_index] = component
+
+                            if id in components:
+                                # le composant est déjà dans la liste
+                                components[id]["quantity"] = (
+                                    components[id]["quantity"]
+                                    + component_item["component"]["quantity"]
+                                )
+                            else:
+                                components[id] = copy.deepcopy(
+                                    component_item["component"]
+                                )
+
+                        if "screw" in input:
+                            component, component_item, id = screw_to_component(
+                                input["screw"]
+                            )
+
+                            step["inputs"][input_index] = component
+
+                            if id in components:
+                                # le composant est déjà dans la liste
+                                components[id]["quantity"] = (
+                                    components[id]["quantity"]
+                                    + component_item["component"]["quantity"]
+                                )
+                            else:
+                                components[id] = copy.deepcopy(
+                                    component_item["component"]
+                                )
+
+                        if "nut" in input:
+                            component, component_item, id = nut_to_component(
+                                input["nut"]
+                            )
+
+                            step["inputs"][input_index] = component
+
+                            if id in components:
+                                # le composant est déjà dans la liste
+                                components[id]["quantity"] = (
+                                    components[id]["quantity"]
+                                    + component_item["component"]["quantity"]
+                                )
+                            else:
+                                components[id] = copy.deepcopy(
+                                    component_item["component"]
+                                )
+
+                        if "washer" in input:
+                            component, component_item, id = washer_to_component(
+                                input["washer"]
                             )
 
                             step["inputs"][input_index] = component
