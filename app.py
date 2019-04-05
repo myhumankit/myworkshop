@@ -191,7 +191,10 @@ def filling_json_file(organization, repository, file):
                                 )
                                 if error:
                                     component = {
-                                        "component": {"full_name": "Unknown component"}
+                                        "component": {
+                                            "full_name": "??? "
+                                            + input["component"]["slug"]
+                                        }
                                     }
                                 id = hashlib.md5(
                                     input["component"]["github_organization"].encode(
@@ -208,7 +211,10 @@ def filling_json_file(organization, repository, file):
                                 )
                                 if error:
                                     component = {
-                                        "component": {"full_name": "Unknown component"}
+                                        "component": {
+                                            "full_name": "??? "
+                                            + input["component"]["slug"]
+                                        }
                                     }
                                 id = hashlib.md5(
                                     organization.encode("UTF-8")
@@ -262,7 +268,11 @@ def filling_json_file(organization, repository, file):
                                     input["tool"]["slug"],
                                 )
                                 if error:
-                                    tool = {"tool": {"full_name": "Unknown tool"}}
+                                    tool = {
+                                        "tool": {
+                                            "full_name": "??? " + input["tool"]["slug"]
+                                        }
+                                    }
                                 id = hashlib.md5(
                                     input["tool"]["github_organization"].encode("UTF-8")
                                     + input["tool"]["github_repository"].encode("UTF-8")
@@ -273,7 +283,11 @@ def filling_json_file(organization, repository, file):
                                     organization, repository, input["tool"]["slug"]
                                 )
                                 if error:
-                                    tool = {"tool": {"full_name": "Unknown tool"}}
+                                    tool = {
+                                        "tool": {
+                                            "full_name": "??? " + input["tool"]["slug"]
+                                        }
+                                    }
                                 id = hashlib.md5(
                                     organization.encode("UTF-8")
                                     + repository.encode("UTF-8")
