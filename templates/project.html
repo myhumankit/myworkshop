@@ -334,49 +334,24 @@
     </div>
     <br/>
 
-    {% if step.media %}
-    {% set step_loop = loop %}
-    <div class="row">
-        <div class="col-md-12">
-            <div id="carousel-{{ step_loop.index }}" class="carousel slide" data-ride="carousel">
-                {% if step.media|length > 1 %}
-                <ol class="carousel-indicators">
-                    {% for media in step.media %}
-                    <li data-target="#carousel-{{ step_loop.index }}" data-slide-to="{{ loop.index0 }}"{{ 'class=" active"' if loop.index == 1 }}></li>
-                    {% endfor %}
-                </ol>
-                {% endif %}
-                <div class="carousel-inner">
-                    {% for media in step.media %}
-                    <div class="carousel-item  {{ 'active' if loop.index == 1 }}">
-                        <img src="{{ media.image.url }}" class="d-block w-100 rounded" alt="{{ media.image.caption }}">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>{{ media.image.caption }}</h5>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% if step.media|length > 1 %}
-                <a class="carousel-control-prev" href="#carousel-{{ step_loop.index }}" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carousel-{{ step_loop.index }}" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
     <div class="row">
         <div class="col-md-3">
             {% if step.inputs %}
-                {% for input in step.inputs %}
-                <div>
-                    <ul class="list-group">
+                <ul class="list-group">
+                    {% for input in step.inputs %}
+                        {% if input.file %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="far fa-file"></i> {{ input.file.name }}</span>
+                            <a href="{{ input.file.url }}">
+                                <i class="fas fa-file-download"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <br/>
+                <ul class="list-group">
+                    {% for input in step.inputs %}
                         {% if input.component %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <span>
@@ -393,12 +368,11 @@
                             </span>
                         </li>
                         {% endif %}
-                    </ul>
-                </div>
-                {% endfor %}
-                {% for input in step.inputs %}
-                <div>
-                    <ul class="list-group">
+                    {% endfor %}
+                </ul>
+                <br/>
+                <ul class="list-group">
+                    {% for input in step.inputs %}
                         {% if input.tool %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <span>
@@ -411,9 +385,8 @@
                             </span>
                         </li>
                         {% endif %}
-                    </ul>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                </ul>
             {% endif %}
         </div>
 
@@ -429,23 +402,35 @@
         </div>
 
         <div class="col-md-3">
-            {% if step.inputs %}
-                {% for input in step.inputs %}
-                <div>
-                    <ul class="list-group">
-                        {% if input.file %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="far fa-file"></i> {{ input.file.name }}</span>
-                            <a href="{{ input.file.url }}">
-                                <i class="fas fa-file-download"></i>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
+            {% if step.media %}
+                {% set step_loop = loop %}
+                {% for media in step.media %}
+                    {% if media.image %}
+                        <!-- Button trigger modal -->
+                        <a href="#" data-toggle="modal" data-target="#picture-{{ step_loop.index }}-{{ loop.index }}">
+                            <img src="{{ media.image.url }}" class="img-thumbnail" alt="{{ media.image.caption }}">
+                        </a>
+                        <!-- Modal -->
+                        <div class="modal fade" id="picture-{{ step_loop.index }}-{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="picture-{{ step_loop.index }}-{{ loop.index }}-label" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="picture-{{ step_loop.index }}-{{ loop.index }}-label">{{ media.image.caption }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ media.image.url }}" class="img-fluid" alt="{{ media.image.caption }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         </div>
+
     </div>
     {% endfor %}
     {% endif %}
