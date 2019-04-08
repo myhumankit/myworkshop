@@ -119,13 +119,13 @@ def index():
             "duration": 3600,
         },
         "2": {
-            "full_name": "Pédale clavier souris",
-            "github_repository": "pedale-clavier-souris",
+            "full_name": "Support de bras anti gravité",
+            "github_repository": "support-de-bras-anti-gravite",
             "github_organization": "myhumankit",
-            "short_description": "Une pédale qui simule l'appui sur une touche de clavier ou sur la souris.",
-            "featured_image": "https://raw.githubusercontent.com/myhumankit/pedale-clavier-souris/master/images/pedale-clavier-souris.jpg",
+            "short_description": "Construire un support articulé permettant à une personne en fauteuil ayant une très faible tonicité musculaire du bras gauche d'en changer la position sans l'aide d'un tiers.",
+            "featured_image": "https://raw.githubusercontent.com/myhumankit/support-de-bras-anti-gravite/master/images/Bras_antiG_pic1.jpeg",
             "cost": {"value": 0, "currency": "EUR"},
-            "duration": 2100,
+            "duration": 73200,
         },
         "3": {
             "full_name": "Bouton train",
