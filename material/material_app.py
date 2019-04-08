@@ -51,6 +51,33 @@ material_dict = {
     "cardboard": {"full_name": "carton", "density": 210, "cost": 0},
 }
 
+nut_dict = {
+    "Hex": {
+        "full_name": "Écrou hexagonal",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/nuts/hex-nut.gif",
+    },
+    "Jam": {
+        "full_name": "Écrou hexagonal court",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/nuts/hex-jam-nut.gif",
+    },
+    "Nylon": {
+        "full_name": "Écrou frein",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/nuts/hex-nylock-nut.gif",
+    },
+    "Flange": {
+        "full_name": "Écrou à collerette",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/nuts/flange-nut.gif",
+    },
+    "Square": {
+        "full_name": "Écrou carré",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/nuts/square-nut.gif",
+    },
+    "Wing": {
+        "full_name": "Écrou papillon",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/nuts/wing-nut.gif",
+    },
+}
+
 
 def profile_to_component(profile):
     if profile["section"]["type"] == "round":
@@ -389,8 +416,11 @@ def screw_to_component(screw):
 
 
 def nut_to_component(nut):
-    full_name = "Écrou {} {}{}, {}".format(
-        nut["type"], nut["threading"], nut["diameter"], nut["material"]
+    full_name = "{} {}{}, {}".format(
+        nut_dict[nut["type"]]["full_name"],
+        nut["threading"],
+        nut["diameter"],
+        nut["material"],
     )
 
     short_description = full_name
@@ -410,6 +440,12 @@ def nut_to_component(nut):
             "cost": {"currency": "EUR", "value": cost},
             "id": id,
             "mass": {"unit": "kg", "value": mass},
+            "featured_image": {
+                "image": {
+                    "url": nut_dict[nut["type"]]["image"],
+                    "caption": nut_dict[nut["type"]]["full_name"],
+                }
+            },
         }
     }
 
@@ -424,6 +460,12 @@ def nut_to_component(nut):
             "github_organization": "",
             "github_repository": "",
             "slug": "",
+            "featured_image": {
+                "image": {
+                    "url": nut_dict[nut["type"]]["image"],
+                    "caption": nut_dict[nut["type"]]["full_name"],
+                }
+            },
         }
     }
 
