@@ -78,6 +78,21 @@ nut_dict = {
     },
 }
 
+washer_dict = {
+    "Flat S": {
+        "full_name": "Rondelle plate étroite",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/washers/flat-washer.gif",
+    },
+    "Flat N": {
+        "full_name": "Rondelle plate",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/washers/flat-washer.gif",
+    },
+    "Flat L": {
+        "full_name": "Rondelle plate large",
+        "image": "https://raw.githubusercontent.com/myhumankit/myworkshop/master/images/washers/flat-large-washer.gif",
+    },
+}
+
 
 def profile_to_component(profile):
     if profile["section"]["type"] == "round":
@@ -473,8 +488,8 @@ def nut_to_component(nut):
 
 
 def washer_to_component(washer):
-    full_name = "Rondelle {} Ø{}, {}".format(
-        washer["type"], washer["diameter"], washer["material"]
+    full_name = "{} Ø{}, {}".format(
+        washer_dict[washer["type"]]["full_name"], washer["diameter"], washer["material"]
     )
 
     short_description = full_name
@@ -494,6 +509,12 @@ def washer_to_component(washer):
             "cost": {"currency": "EUR", "value": cost},
             "id": id,
             "mass": {"unit": "kg", "value": mass},
+            "featured_image": {
+                "image": {
+                    "url": washer_dict[washer["type"]]["image"],
+                    "caption": washer_dict[washer["type"]]["full_name"],
+                }
+            },
         }
     }
 
@@ -508,6 +529,12 @@ def washer_to_component(washer):
             "github_organization": "",
             "github_repository": "",
             "slug": "",
+            "featured_image": {
+                "image": {
+                    "url": washer_dict[washer["type"]]["image"],
+                    "caption": washer_dict[washer["type"]]["full_name"],
+                }
+            },
         }
     }
 
