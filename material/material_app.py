@@ -9,6 +9,10 @@ cost in € / kg
 material_dict = {
     "steel": {"full_name": "acier", "density": 7850, "cost": 5},
     "stainless steel": {"full_name": "inox", "density": 8010, "cost": 6},
+    "black stainless steel": {"full_name": "inox noir", "density": 8010, "cost": 6},
+    "bronze": {"full_name": "bronze", "density": 8810, "cost": 7},
+    "nylon": {"full_name": "nylon", "density": 1240, "cost": 6},
+    "brass": {"full_name": "laiton", "density": 8410, "cost": 6},
     "aluminum": {"full_name": "aluminium", "density": 2700, "cost": 20},
     "copper": {"full_name": "cuivre", "density": 8950, "cost": 20},
     "fir": {"full_name": "sapin", "density": 1000, "cost": 1.5},
@@ -49,6 +53,61 @@ material_dict = {
     "glass": {"full_name": "verre", "density": 2500, "cost": 0},
     "foam": {"full_name": "mousse", "density": 40, "cost": 0},
     "cardboard": {"full_name": "carton", "density": 210, "cost": 0},
+}
+
+screw_head_dict = {
+    "A": {"full_name": "sans tête"},
+    "C": {"full_name": "cylindrique"},
+    "F": {"full_name": "fraisée"},
+    "G": {"full_name": "goutte de suif"},
+    "H": {"full_name": "hexagonale"},
+    "J": {"full_name": "Japy"},
+    "Q": {"full_name": "carrée"},
+    "R": {"full_name": "ronde"},
+    "RL": {"full_name": "poêlier"},
+}
+
+screw_head_option_dict = {
+    "": {"full_name": ""},
+    "B": {"full_name": "bombée"},
+    "BL": {"full_name": "bombée large"},
+    "D": {"full_name": "à embase"},
+    "F": {"full_name": "à embase centrée"},
+    "K": {"full_name": "à créneaux"},
+    "T": {"full_name": "à collerette"},
+}
+
+screw_driving_dict = {
+    "": {"full_name": ""},
+    "HC": {"full_name": "à six pans creux"},
+    "CC": {"full_name": "à collet carré"},
+    "EG": {"full_name": "à ergot"},
+    "S": {"full_name": "fendue"},
+    "H": {"full_name": "cruciforme « Phillips »"},
+    "Z": {"full_name": "cruciforme « Pozidriv »"},
+    "X": {"full_name": "à six lobes internes « Torx »"},
+    "DB": {"full_name": "« Dombo be »"},
+}
+
+screw_threading_dict = {
+    "M": {"full_name": "métrique"},
+    "MF": {"full_name": "métrique pas fin"},
+    "ST": {"full_name": "à tôle"},
+    "VB": {"full_name": "à bois"},
+    "Tr": {"full_name": "trapézoïdal"},
+    "Rd": {"full_name": "rond"},
+}
+
+screw_extremity_dict = {
+    "CH": {"full_name": "à bout chanfreiné"},
+    "RL": {"full_name": "brut de roulage"},
+    "PN": {"full_name": "à bout pilote conique"},
+    "LD": {"full_name": "à bout pilote cylindrique"},
+    "BB": {"full_name": "à bout bombé"},
+    "TC": {"full_name": "à téton court"},
+    "TL": {"full_name": "à téton long"},
+    "PL": {"full_name": "à bout plat"},
+    "CV": {"full_name": "à bout cuvette"},
 }
 
 nut_dict = {
@@ -378,22 +437,49 @@ def screw_to_component(screw):
         screw["head"], screw["head_option"], screw["driving"]
     )
 
+    short_description = "Vis {} {} {}".format(
+        screw_head_dict[screw["head"]]["full_name"],
+        screw_head_option_dict[screw["head_option"]]["full_name"],
+        screw_driving_dict[screw["driving"]]["full_name"],
+    )
+
     if "extremity" in screw:
         full_name = "{} {}".format(full_name, screw["extremity"])
+        short_description = "{}, {}".format(
+            short_description, screw_extremity_dict[screw["extremity"]]["full_name"]
+        )
 
     full_name = "{}, {}{}-{}".format(
         full_name, screw["threading"], screw["diameter"], screw["length"]
     )
 
+    short_description = "{}, filetage {}, diamètre nominal {} mm, longueur {} mm".format(
+        short_description,
+        screw_threading_dict[screw["threading"]]["full_name"],
+        screw["diameter"],
+        screw["length"],
+    )
+
     if "threaded_length" in screw:
         full_name = "{}-{}".format(full_name, screw["threaded_length"])
+        short_description = "{}, de longueur filetée {} mm".format(
+            short_description, screw["threaded_length"]
+        )
 
     if "quality" in screw:
         full_name = "{}, {}".format(full_name, screw["quality"])
+        short_description = "{}, de classe de qualité {}.".format(
+            short_description, screw["quality"]
+        )
     else:
-        full_name = "{}, {}".format(full_name, screw["material"])
+        full_name = "{}, {}".format(
+            full_name, material_dict[screw["material"]]["full_name"]
+        )
+        short_description = "{}, en {}.".format(
+            short_description, material_dict[screw["material"]]["full_name"]
+        )
 
-    short_description = full_name
+    # short_description = full_name
 
     id = hashlib.md5(full_name.encode("UTF-8")).hexdigest()
 
@@ -435,7 +521,7 @@ def nut_to_component(nut):
         nut_dict[nut["type"]]["full_name"],
         nut["threading"],
         nut["diameter"],
-        nut["material"],
+        material_dict[nut["material"]]["full_name"],
     )
 
     short_description = full_name
@@ -489,7 +575,9 @@ def nut_to_component(nut):
 
 def washer_to_component(washer):
     full_name = "{} Ø{}, {}".format(
-        washer_dict[washer["type"]]["full_name"], washer["diameter"], washer["material"]
+        washer_dict[washer["type"]]["full_name"],
+        washer["diameter"],
+        material_dict[washer["material"]]["full_name"],
     )
 
     short_description = full_name
