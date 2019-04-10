@@ -7,6 +7,7 @@ from uuid import uuid4
 import hashlib
 import copy
 import markdown2
+
 import humanize
 from flask_caching import Cache
 from material.material_app import (
@@ -21,6 +22,12 @@ from material.material_app import (
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 cache_timeout = 60  # 60 seconds = 1 minute
+
+markdownExtra = {
+    "tables": True,
+    "break-on-newline": True,
+    "html-classes": {"table": "table table-striped"},
+}
 
 
 @app.context_processor
@@ -495,12 +502,16 @@ def project_details(organization, repository):
 
     # transform markdown to html
     if "about" in data["project"]:
-        data["project"]["about"] = markdown2.markdown(data["project"]["about"])
+        data["project"]["about"] = markdown2.markdown(
+            data["project"]["about"], extras=markdownExtra
+        )
 
     if "steps" in data["project"]:
         for step in data["project"]["steps"]:
             if "content" in step:
-                step["content"] = markdown2.markdown(step["content"])
+                step["content"] = markdown2.markdown(
+                    step["content"], extras=markdownExtra
+                )
 
     # project rendering
     return render_template("project.html", project=data["project"])
@@ -565,7 +576,9 @@ def components_portfolio(organization, repository):
     if "steps" in data["project"]:
         for step in data["project"]["steps"]:
             if "content" in step:
-                step["content"] = markdown2.markdown(step["content"])
+                step["content"] = markdown2.markdown(
+                    step["content"], extras=markdownExtra
+                )
 
     # project rendering
     return render_template("project_detail.html", project=data["project"])
