@@ -1,6 +1,13 @@
 # myworkshop
 A documentation generator for open hardware projects.
 
+## Disclaimer
+**This repository is obsolete and will no longer evolve!**
+**Please find below the most up to date project:**
+
+https://github.com/myworkshopproject/myworkshop
+
+
 ## Features
  * Generate beautiful documentation for open hardware projects from source files stored on GitHub!
 
